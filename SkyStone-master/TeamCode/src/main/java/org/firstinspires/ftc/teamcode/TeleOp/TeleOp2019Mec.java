@@ -72,8 +72,7 @@ public class TeleOp2019Mec extends OpMode {
         }
         if ((gamepad2.right_stick_y) > .1) {
             lift.setPower(1);
-//            lift.setPower(0);
-//            lift.setPower(gamepad2.right_stick_y);
+
             telemetry.addData("Lift Value:", gamepad2.right_stick_y);
             telemetry.update();
         } else if ((gamepad2.right_stick_y) < -0.1){
