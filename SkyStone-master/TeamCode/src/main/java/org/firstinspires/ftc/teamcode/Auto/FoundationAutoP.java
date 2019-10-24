@@ -1,9 +1,10 @@
-package org.firstinspires.ftc.teamcode.Testing;
+package org.firstinspires.ftc.teamcode.Auto;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.util.ElapsedTime; 
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Autonomous (group = "Auto2019", name = "FoundationAutoP")
 public class FoundationAutoP extends LinearOpMode {
@@ -11,6 +12,7 @@ public class FoundationAutoP extends LinearOpMode {
     DcMotor rightBack;
     DcMotor leftFront;
     DcMotor rightFront;
+    Servo clamp;
     private ElapsedTime runtime = new ElapsedTime();
     int step = 0;
     public void MoveInch(double speed, double inches) {
@@ -52,15 +54,18 @@ public class FoundationAutoP extends LinearOpMode {
     {
         MoveInch(1, 30);
     }
-    if(step == 1)
+    if (step == 1)
     {
-        MoveInch(-1, -30);
-    }
-    if (step == 2){
-        strafe(1, 2);
+        Clamp(1);
     }
 
 
+
+    }
+    public void Clamp(double targetPos)
+    {
+        while (Math.abs(clamp.getPosition()) < Math.abs(targetPos))
+        clamp.setPosition(targetPos);
     }
     public void strafe(double speed, double time) {
         // Ticks is the math for the amount of inches, ticks is paired with getcurrentposition
