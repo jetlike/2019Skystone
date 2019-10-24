@@ -16,9 +16,7 @@ public class TeleOp2019Mec extends OpMode {
     DcMotor rb;
     DcMotor lf;
     DcMotor rf;
-    private double lasta = 0.0;
     private ElapsedTime runtime = new ElapsedTime();
-    double backPower = 1;
     DcMotor lift;
     Servo clamp;
     boolean clampb = false;
@@ -38,8 +36,8 @@ public class TeleOp2019Mec extends OpMode {
 
 
         if (Math.abs(gamepad1.left_stick_y) > .05) {
-            lb.setPower(gamepad1.left_stick_y * backPower);
-            rb.setPower(-gamepad1.left_stick_y * backPower);
+            lb.setPower(gamepad1.left_stick_y);
+            rb.setPower(-gamepad1.left_stick_y);
             lf.setPower(gamepad1.left_stick_y);
             rf.setPower(-gamepad1.left_stick_y);
         } else {
@@ -50,9 +48,9 @@ public class TeleOp2019Mec extends OpMode {
         }
         if (Math.abs(gamepad1.left_stick_x) > .05) {
             lf.setPower(-gamepad1.left_stick_x);
-            lb.setPower(gamepad1.left_stick_x * backPower);
+            lb.setPower(gamepad1.left_stick_x);
             rf.setPower(-gamepad1.left_stick_x);
-            rb.setPower(gamepad1.left_stick_x * backPower);
+            rb.setPower(gamepad1.left_stick_x);
         } else {
             lb.setPower(0);
             rb.setPower(0);
@@ -73,7 +71,7 @@ public class TeleOp2019Mec extends OpMode {
         if ((gamepad2.right_stick_y) > .1) {
             lift.setPower(1);
 
-            telemetry.addData("Lift Value:", gamepad2.right_stick_y);
+        //    telemetry.addData("Lift Value:", gamepad2.right_stick_y);
             telemetry.update();
         } else if ((gamepad2.right_stick_y) < -0.1){
             lift.setPower(-1);
