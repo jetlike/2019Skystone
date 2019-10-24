@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Testing;
+package org.firstinspires.ftc.teamcode.TeleOp;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-@TeleOp(name = "testtele", group = "2019")
+@TeleOp(name = "MecTeleOp", group = "2019")
 public class TeleOp2019Mec extends OpMode {
     DcMotor lb;
     DcMotor rb;
@@ -70,22 +70,34 @@ public class TeleOp2019Mec extends OpMode {
             lf.setPower(0);
             rf.setPower(0);
         }
-        if (Math.abs(gamepad2.right_stick_y) > .1) {
-
-            telemetry.addData("Lift Value:", gamepad2.right_trigger);
+        if ((gamepad2.right_stick_y) > .1) {
+            lift.setPower(1);
+//            lift.setPower(0);
+//            lift.setPower(gamepad2.right_stick_y);
+            telemetry.addData("Lift Value:", gamepad2.right_stick_y);
+            telemetry.update();
+        } else if ((gamepad2.right_stick_y) < -0.1){
+            lift.setPower(-1);
+            telemetry.addData("Lift Value:", gamepad2.right_stick_y);
+            telemetry.update();
         } else {
             lift.setPower(0);
+            telemetry.addData("Lift Value:", gamepad2.right_stick_y);
+            telemetry.update();
         }
 
 
         if (gamepad2.a) {
-            if (!clampb && runtime.milliseconds() > lasta + 500) {
-                clamp.setPosition(.7);
+            if (!clampb) {
+                // while (gamepad2.a);
+                clamp.setPosition(.8);
                 clampb = true;
-            } else if (clampb && runtime.milliseconds() > lasta + 500) {
+            } else if (clampb) {
+                //  while (gamepad2.a);
                 clamp.setPosition(0.1);
                 clampb = false;
             }
+
         }
 
     }
