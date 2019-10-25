@@ -1,0 +1,107 @@
+package org.firstinspires.ftc.teamcode.TeleOp;
+
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
+
+@TeleOp(name = "MecTeleOp", group = "godly")
+public class MecTeleOp extends OpMode {
+
+    DcMotor lift;           //declaring stuff
+    DcMotor lf;
+    DcMotor rf;
+    DcMotor lb;
+    DcMotor rb;
+
+    Servo clamp;
+    double lasta = 0;
+    boolean clampb = true;
+
+    private ElapsedTime runtime = new ElapsedTime();
+
+
+    public void init() {
+        lift = hardwareMap.dcMotor.get("lift");        //initialize motors, servos
+        lf = hardwareMap.dcMotor.get("leftfront");
+        rf = hardwareMap.dcMotor.get("rightfront");
+        lb = hardwareMap.dcMotor.get("leftback");
+        rb = hardwareMap.dcMotor.get("rightback");
+        lf.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rf.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        lb.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rb.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+
+        clamp = hardwareMap.servo.get("clamp");
+
+        clamp.setPosition(0.1); //this is when clampb is true
+    }
+
+    public void loop() {
+
+        if (Math.abs(gamepad1.left_stick_y) > .1 || Math.abs(gamepad1.left_stick_x) > .1 || Math.abs(gamepad1.right_stick_x) > .1) {
+            double FLP = gamepad1.left_stick_y + -gamepad1.left_stick_x - gamepad1.right_stick_x;
+            double FRP = -gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x;
+            double BLP = gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x;
+            double BRP = -gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x;  //checks if sticks have been moved
+                                                                                                  //then calculates power based on movement of sticks
+            double max = Math.max(Math.max(Math.abs(FLP), Math.abs(FRP)), Math.max(Math.abs(BLP), Math.abs(BRP)));
+                                                                                                  //calculates the max of the powers, used to see if
+            if (max > 1) {                                                                        //scaling of power is needed
+                FLP /= max;    //if scaling is needed this does the job
+                FRP /= max;
+                BLP /= max;
+                BRP /= max;
+            }
+
+            telemetry.addData("FrontLeftPow:", FLP); //add telemetry to see how much power each motor is getting
+            telemetry.addData("FrontRightPow:", FRP);
+            telemetry.addData("BackLeftPow:", BLP);
+            telemetry.addData("BackRightPow:", BRP);
+
+            lf.setPower(FLP); //ez stuff
+            rf.setPower(FRP);
+            lb.setPower(BLP);
+            rb.setPower(BRP);
+        } else {
+            lf.setPower(0);
+            rf.setPower(0);
+            lb.setPower(0);
+            rb.setPower(0);
+        }
+
+
+        if (Math.abs(gamepad2.right_stick_y) > .1) {            //lift code;easy stuff
+            lift.setPower(gamepad2.right_stick_y);
+            telemetry.addData("Lift Value:", gamepad2.right_stick_y); //add telemetry to see how much power lift is getting
+        } else {
+            lift.setPower(0);
+            telemetry.addData("Lift Value:", gamepad2.right_stick_y); //add telemetry to see how much power lift is getting
+
+        }
+
+        if (gamepad2.a) {                                              //clamp code, checks if the a button has been pressed
+            if (clampb && runtime.milliseconds() > lasta + 500) {      //once pressed, will check whether clampb is true or false
+                clamp.setPosition(0.8);                                //makes movements based on that, also checks for delay to run smoothly
+                clampb = false;
+                runtime.reset();
+                telemetry.addData("ClampPos:", 0.8); //add telemetry to see where clamp is positioned
+            } else if (!clampb && runtime.milliseconds() > lasta + 500) {
+                clamp.setPosition(0.1);
+                clampb = true;
+                runtime.reset();
+                telemetry.addData("ClampPos:", 0.1); //add telemetry to see where clamp is positioned
+            }
+        }
+
+        telemetry.update(); //have to display the added data
+
+    }
+
+    public void stop() {
+
+    }
+}
