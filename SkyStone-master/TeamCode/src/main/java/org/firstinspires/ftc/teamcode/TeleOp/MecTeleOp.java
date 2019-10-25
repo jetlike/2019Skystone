@@ -20,6 +20,11 @@ public class MecTeleOp extends OpMode {
     double lasta = 0;
     boolean clampb = true;
 
+    Servo foundation1;
+    Servo foundation2;
+    double founda = 0;
+    boolean foundup = true;
+
     private ElapsedTime runtime = new ElapsedTime();
 
 
@@ -36,8 +41,13 @@ public class MecTeleOp extends OpMode {
 
 
         clamp = hardwareMap.servo.get("clamp");
+        foundation1 = hardwareMap.servo.get("found1");
+        foundation2 = hardwareMap.servo.get("found2");
 
         clamp.setPosition(0.1); //this is when clampb is true
+
+        foundation1.setPosition(0.1);  //when foundup is true
+        foundation2.setPosition(0.1);
     }
 
     public void loop() {
@@ -47,10 +57,10 @@ public class MecTeleOp extends OpMode {
             double FRP = -gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x;
             double BLP = gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x;
             double BRP = -gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x;  //checks if sticks have been moved
-                                                                                                  //then calculates power based on movement of sticks
+            //then calculates power based on movement of sticks
             double max = Math.max(Math.max(Math.abs(FLP), Math.abs(FRP)), Math.max(Math.abs(BLP), Math.abs(BRP)));
-                                                                                                  //calculates the max of the powers, used to see if
-            if (max > 1) {                                                                        //scaling of power is needed
+            //calculates the max of the powers, used to see if
+            if (max > 1) {                                                        //scaling of power is needed
                 FLP /= max;    //if scaling is needed this does the job
                 FRP /= max;
                 BLP /= max;
@@ -85,15 +95,31 @@ public class MecTeleOp extends OpMode {
 
         if (gamepad2.a) {                                              //clamp code, checks if the a button has been pressed
             if (clampb && runtime.milliseconds() > lasta + 500) {      //once pressed, will check whether clampb is true or false
-                clamp.setPosition(0.8);                                //makes movements based on that, also checks for delay to run smoothly
-                clampb = false;
-                runtime.reset();
-                telemetry.addData("ClampPos:", 0.8); //add telemetry to see where clamp is positioned
+                clamp.setPosition(0.8);                       //makes movements based on the clampb boolean
+                clampb = false;                              // checks if the last time you've hit the button has been more than
+                runtime.reset();                            // x amount of seconds, so it doesn't jitter
+                telemetry.addData("ClampPos:", 0.6); //add telemetry to see where clamp is positioned
             } else if (!clampb && runtime.milliseconds() > lasta + 500) {
                 clamp.setPosition(0.1);
                 clampb = true;
                 runtime.reset();
                 telemetry.addData("ClampPos:", 0.1); //add telemetry to see where clamp is positioned
+            }
+        }
+
+        if (gamepad2.b) {                                         //foundation servo code, checks if the b button has been pressed
+            if (foundup && runtime.milliseconds() > founda + 500) {
+                foundation1.setPosition(0.8);             //once pressed, will check whether or not foundup is true or false
+                foundation2.setPosition(0.8);              //makes movements based on the foundup boolean
+                foundup = false;                        // checks if the last time you've hit the button has been more than
+                runtime.reset();                        // x amount of seconds, so it doesn't jitter
+                telemetry.addData("FoundationPos:", 0.8); //add telemetry to ses where foundation servos are positioned
+            } else if (!foundup && runtime.milliseconds() > founda + 500) {
+                foundation1.setPosition(0.1);
+                foundation2.setPosition(0.1);
+                foundup = true;
+                runtime.reset();
+                telemetry.addData("FoundationPos:", 0.1); //add telemetry to ses where foundation servos are positioned
             }
         }
 
