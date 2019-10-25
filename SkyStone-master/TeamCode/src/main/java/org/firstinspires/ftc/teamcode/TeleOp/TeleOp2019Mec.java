@@ -7,8 +7,7 @@ import com.qualcomm.robotcore.hardware.GyroSensor;
 import com.qualcomm.robotcore.hardware.Gyroscope;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.hardware.Gamepad;
-import com.qualcomm.robotcore.hardware.HardwareMap;
+
 
 @TeleOp(name = "TeleOp2019Mec", group = "2019")
 public class TeleOp2019Mec extends OpMode {
@@ -28,71 +27,62 @@ public class TeleOp2019Mec extends OpMode {
         rb = hardwareMap.dcMotor.get("Right Back");
         lf = hardwareMap.dcMotor.get("Left Front");
         rf = hardwareMap.dcMotor.get("Right Front");
+        lb.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rb.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        lf.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rf.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
         lift = hardwareMap.dcMotor.get("lift");
         clamp = hardwareMap.servo.get("clamp");
-        lift.setPower(0);
+
         clamp.setPosition(0.1);
+    }
+    @Override
+    public void start() {
+        lift.setPower(0);
+
+        lf.setPower(0);
+        rf.setPower(0);
+        lb.setPower(0);
+        rb.setPower(0);
     }
 
     public void loop() {
 
 
-        if (Math.abs(gamepad1.left_stick_y) > .05) {
-            lb.setPower(gamepad1.left_stick_y);
-            rb.setPower(-gamepad1.left_stick_y);
-            lf.setPower(gamepad1.left_stick_y);
-            rf.setPower(-gamepad1.left_stick_y);
-            telemetry.addData("LeftStickYVal:", gamepad1.left_stick_y);
-            telemetry.update();
-        } else {
-            lb.setPower(0);
-            rb.setPower(0);
-            lf.setPower(0);
-            rf.setPower(0);
-            telemetry.addData("LeftStickYVal:", gamepad1.left_stick_y);
-            telemetry.update();
+        if (Math.abs(gamepad1.left_stick_y) > .1 || Math.abs(gamepad1.left_stick_x) > .1 || (Math.abs(gamepad1.right_stick_x)) > .1) {
+            double FLP = -gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x;
+            double FRP = -gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x;
+            double BLP = gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_x; // using gears; direction reversed
+            double BRP = gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x; // using gears direction reversed
+
+            double max = Math.max(Math.max(Math.abs(FLP), Math.abs(FRP)), Math.max(Math.abs(BLP), Math.abs(BRP)));
+            // scales power if any motor power is greater than 1
+            if (max > 1) {
+                FLP /= max;
+                FRP /= max;
+                BLP /= max;
+                BRP /= max;
+            }
+            lf.setPower(FLP);
+            rf.setPower(FRP);
+            lb.setPower(BLP);
+            rb.setPower(BRP);
         }
-        if (Math.abs(gamepad1.left_stick_x) > .05) {
-            lf.setPower(-gamepad1.left_stick_x);
-            lb.setPower(gamepad1.left_stick_x);
-            rf.setPower(-gamepad1.left_stick_x);
-            rb.setPower(gamepad1.left_stick_x);
-            telemetry.addData("LeftStickXVal:", gamepad1.left_stick_x);
-            telemetry.update();
-        } else {
-            lb.setPower(0);
-            rb.setPower(0);
+        else {
             lf.setPower(0);
             rf.setPower(0);
-            telemetry.addData("LeftStickXVal:", gamepad1.left_stick_x);
-            telemetry.update();
-        }
-        if (Math.abs(gamepad1.right_stick_x) > .05) {
-            lb.setPower(-gamepad1.right_stick_x);
-            rb.setPower(-gamepad1.right_stick_x);
-            lf.setPower(-gamepad1.right_stick_x);
-            rf.setPower(-gamepad1.right_stick_x);
-            telemetry.addData("RightStickXVal:", gamepad1.right_stick_x);
-            telemetry.update();
-        } else {
             lb.setPower(0);
             rb.setPower(0);
-            lf.setPower(0);
-            rf.setPower(0);
-            telemetry.addData("RightStickXVal:", gamepad1.right_stick_x);
-            telemetry.update();
         }
         if ((gamepad2.right_stick_y) > .1) {
             lift.setPower(.1);
             telemetry.addData("Lift Value:", gamepad2.right_stick_y);
-            telemetry.update();
         } else if ((gamepad2.right_stick_y) < -0.1) {
             telemetry.addData("Lift Value:", gamepad2.right_stick_y);
-            telemetry.update();
         } else {
             lift.setPower(0);
             telemetry.addData("Lift Value:", gamepad2.right_stick_y);
-            telemetry.update();
         }
 
 
@@ -107,6 +97,7 @@ public class TeleOp2019Mec extends OpMode {
                 runtime.reset();
             }
         }
+        telemetry.update();
 
     }
 
