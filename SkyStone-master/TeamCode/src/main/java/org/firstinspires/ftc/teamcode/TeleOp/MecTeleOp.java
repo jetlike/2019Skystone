@@ -22,7 +22,7 @@ public class MecTeleOp extends OpMode {
 
     Servo foundation1;
     Servo foundation2;
-    double founda = 0;
+    double foundb = 0;
     boolean foundup = true;
 
     private ElapsedTime runtime = new ElapsedTime();
@@ -108,13 +108,13 @@ public class MecTeleOp extends OpMode {
         }
 
         if (gamepad2.b) {                                         //foundation servo code, checks if the b button has been pressed
-            if (foundup && runtime.milliseconds() > founda + 500) {
+            if (foundup && runtime.milliseconds() > foundb + 500) {
                 foundation1.setPosition(0.8);             //once pressed, will check whether or not foundup is true or false
                 foundation2.setPosition(0.8);              //makes movements based on the foundup boolean
                 foundup = false;                        // checks if the last time you've hit the button has been more than
                 runtime.reset();                        // x amount of seconds, so it doesn't jitter
                 telemetry.addData("FoundationPos:", 0.8); //add telemetry to ses where foundation servos are positioned
-            } else if (!foundup && runtime.milliseconds() > founda + 500) {
+            } else if (!foundup && runtime.milliseconds() > foundb + 500) {
                 foundation1.setPosition(0.1);
                 foundation2.setPosition(0.1);
                 foundup = true;
