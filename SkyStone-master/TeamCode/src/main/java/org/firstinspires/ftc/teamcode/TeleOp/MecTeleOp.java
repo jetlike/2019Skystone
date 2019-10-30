@@ -34,10 +34,17 @@ public class MecTeleOp extends OpMode {
         rf = hardwareMap.dcMotor.get("rightfront");
         lb = hardwareMap.dcMotor.get("leftback");
         rb = hardwareMap.dcMotor.get("rightback");
+        lift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         lf.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rf.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         lb.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rb.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        lf.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rf.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        lb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
 
 
         clamp = hardwareMap.servo.get("clamp");
@@ -95,7 +102,7 @@ public class MecTeleOp extends OpMode {
 
         if (gamepad2.a) {                                              //clamp code, checks if the a button has been pressed
             if (clampb && runtime.milliseconds() > lasta + 500) {      //once pressed, will check whether clampb is true or false
-                clamp.setPosition(0.8);                       //makes movements based on the clampb boolean
+                clamp.setPosition(0.65);                       //makes movements based on the clampb boolean
                 clampb = false;                              // checks if the last time you've hit the button has been more than
                 runtime.reset();                            // x amount of seconds, so it doesn't jitter
                 telemetry.addData("ClampPos:", 0.6); //add telemetry to see where clamp is positioned
