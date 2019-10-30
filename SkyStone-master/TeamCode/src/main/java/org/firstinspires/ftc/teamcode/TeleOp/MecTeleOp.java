@@ -79,7 +79,7 @@ public class MecTeleOp extends OpMode {
             telemetry.addData("BackLeftPow:", BLP);
             telemetry.addData("BackRightPow:", BRP);
 
-            if (gamepad1.right_trigger > 0.1) {
+            if (gamepad1.right_trigger > 0.1) { //if you want to go slower hold down right trigger
                 lf.setPower(FLP*.2); //ez stuff
                 rf.setPower(FRP*.2);
                 lb.setPower(BLP*.2);
