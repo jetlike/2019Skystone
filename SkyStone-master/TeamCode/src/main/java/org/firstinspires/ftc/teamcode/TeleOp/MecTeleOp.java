@@ -53,8 +53,8 @@ public class MecTeleOp extends OpMode {
 
         clamp.setPosition(0.1); //this is when clampb is true
 
-        foundation1.setPosition(0.1);  //when foundup is true
-        foundation2.setPosition(0.1);
+        foundation1.setPosition(1);  //when foundup is true
+        foundation2.setPosition(0);
     }
 
     public void loop() {
@@ -124,14 +124,14 @@ public class MecTeleOp extends OpMode {
 
         if (gamepad2.b) {                                         //foundation servo code, checks if the b button has been pressed
             if (foundup && runtime.milliseconds() > foundb + 500) {
-                foundation1.setPosition(0.2);             //once pressed, will check whether or not foundup is true or false
-                foundation2.setPosition(0.2);              //makes movements based on the foundup boolean
+                foundation1.setPosition(.66);             //once pressed, will check whether or not foundup is true or false
+                foundation2.setPosition(0.33);              //makes movements based on the foundup boolean
                 foundup = false;                        // checks if the last time you've hit the button has been more than
                 runtime.reset();                        // x amount of seconds, so it doesn't jitter
                 telemetry.addData("FoundationPos:", 0.8); //add telemetry to ses where foundation servos are positioned
             } else if (!foundup && runtime.milliseconds() > foundb + 500) {
-                foundation1.setPosition(0.1);
-                foundation2.setPosition(0.1);
+                foundation1.setPosition(1);
+                foundation2.setPosition(0);
                 foundup = true;
                 runtime.reset();
                 telemetry.addData("FoundationPos:", 0.1); //add telemetry to ses where foundation servos are positioned

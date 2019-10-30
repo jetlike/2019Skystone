@@ -6,12 +6,13 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous(group = "godly", name = "FoundationAutoP")
-public class FoundationAutoP extends LinearOpMode {
+@Autonomous(group = "godly", name = "QuarryAutoP")
+public class QuarryAutoP extends LinearOpMode {
     DcMotor leftBack;
     DcMotor rightBack;
     DcMotor leftFront;
     DcMotor rightFront;
+    DcMotor lift;
     Servo found;
     Servo found2;
     Servo clamp;
@@ -36,27 +37,18 @@ public class FoundationAutoP extends LinearOpMode {
 
         //if the position is less than the number of inches, than it sets the motors to speed
         while (Math.abs(leftBack.getCurrentPosition()) <= ticks) {
-            if (inches > 0) {
-                leftBack.setPower(-speed);
-                rightBack.setPower(speed);
-                leftFront.setPower(-speed);
-                rightFront.setPower(speed);
-            } else if (inches < 0) {
-                leftBack.setPower(speed);
-                rightBack.setPower(-speed);
-                leftFront.setPower(speed);
-                rightFront.setPower(-speed);
-            }
+            leftBack.setPower(-speed);
+            rightBack.setPower(speed);
+            leftFront.setPower(-speed);
+            rightFront.setPower(speed);
             if (Math.abs(leftBack.getCurrentPosition()) > ticks) {
-                break;
+                leftBack.setPower(0);
+                rightBack.setPower(0);
+                leftFront.setPower(0);
+                rightFront.setPower(0);
             }
 
         }
-        leftBack.setPower(0);
-        rightBack.setPower(0);
-        leftFront.setPower(0);
-        rightFront.setPower(0);
-
 
 
     }
@@ -73,54 +65,30 @@ public class FoundationAutoP extends LinearOpMode {
 
         found.setPosition(1);
         found2.setPosition(0);
-
+        clamp.setPosition(0.1);
 
 
         waitForStart();
 
-        MoveInch(1, 11);
-        telemetry.addData("Running MoveInch:", "1");
-        telemetry.update();
-        sleep(1000);
+        MoveInch(.75, 7);
+        sleep(2500);
 
-        Clamp(0.55, 0.45);
-        telemetry.addData("Running Clamp:", "1");
-        telemetry.update();
-        sleep(1000);
+        Grabber(0.77);
+        sleep(500);
 
-        MoveInch(1, -5);
-        telemetry.addData("Running MoveInch:", "1");
-        telemetry.update();
-        sleep(1000);
 
-        Clamp(1, 0);
-        telemetry.addData("Running Clamp:", "1");
-        telemetry.update();
-        sleep(1000);
-
-        strafe(1, 5);
-        telemetry.addData("Running strafe:", "1");
-        telemetry.update();
-        sleep(1000);
-
-        MoveInch(1, 10);
-        telemetry.addData("Running MoveInch:", "1");
-        telemetry.update();
-        sleep(1000);
-
-        strafe(-1, 5);
-        telemetry.addData("Running strafe:", "1");
-        telemetry.update();
-        sleep(1000);
-
-        strafe(1, 7);
-        telemetry.addData("Running strafe:", "1");
-        telemetry.update();
-        sleep(1000);
 
 
     }
 
+    public void Grabber(double targetpos)
+    {
+        clamp.setPosition(targetpos);
+    }
+    public void Lift(double targetpos)
+    {
+        clamp.setPosition(targetpos);
+    }
     public void Clamp(double targetPos1, double targetPos2) {
 
         found.setPosition(targetPos1);
