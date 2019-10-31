@@ -69,7 +69,7 @@ public class FoundationAutoP extends Methods {
         sleep(1000);
 
         Strafe(1, 15);
-        telemetry.addData("Running strafe3 bb :", "complete");
+        telemetry.addData("Running strafe3:", "complete");
         telemetry.update();
         sleep(1000);
 
