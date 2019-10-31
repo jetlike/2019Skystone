@@ -74,21 +74,26 @@ public class MecTeleOp extends OpMode {
                 BRP /= max;
             }
 
-            telemetry.addData("FrontLeftPow:", FLP); //add telemetry to see how much power each motor is getting
-            telemetry.addData("FrontRightPow:", FRP);
-            telemetry.addData("BackLeftPow:", BLP);
-            telemetry.addData("BackRightPow:", BRP);
+
 
             if (gamepad1.right_trigger > 0.1) { //if you want to go slower hold down right trigger
-                lf.setPower(FLP*.2); //ez stuff
-                rf.setPower(FRP*.2);
-                lb.setPower(BLP*.2);
-                rb.setPower(BRP*.2);
+                lf.setPower(FLP*.35); //ez stuff
+                rf.setPower(FRP*.35);
+                lb.setPower(BLP*.35);
+                rb.setPower(BRP*.35);
+                telemetry.addData("FrontLeftPow:", FLP*.35); //add telemetry to see how much power each motor is getting
+                telemetry.addData("FrontRightPow:", FRP*.35);
+                telemetry.addData("BackLeftPow:", BLP*.35);
+                telemetry.addData("BackRightPow:", BRP*.35);
             } else {
                 lf.setPower(FLP); //ez stuff
                 rf.setPower(FRP);
                 lb.setPower(BLP);
                 rb.setPower(BRP);
+                telemetry.addData("FrontLeftPow:", FLP); //add telemetry to see how much power each motor is getting
+                telemetry.addData("FrontRightPow:", FRP);
+                telemetry.addData("BackLeftPow:", BLP);
+                telemetry.addData("BackRightPow:", BRP);
             }
 
         } else {
@@ -110,7 +115,7 @@ public class MecTeleOp extends OpMode {
 
         if (gamepad2.a) {                                              //clamp code, checks if the a button has been pressed
             if (clampb && runtime.milliseconds() > lasta + 500) {      //once pressed, will check whether clampb is true or false
-                clamp.setPosition(0.77);                       //makes movements based on the clampb boolean
+                clamp.setPosition(0.85);                       //makes movements based on the clampb boolean
                 clampb = false;                              // checks if the last time you've hit the button has been more than
                 runtime.reset();                            // x amount of seconds, so it doesn't jitter
                 telemetry.addData("ClampPos:", 0.6); //add telemetry to see where clamp is positioned
@@ -124,8 +129,8 @@ public class MecTeleOp extends OpMode {
 
         if (gamepad2.b) {                                         //foundation servo code, checks if the b button has been pressed
             if (foundup && runtime.milliseconds() > foundb + 500) {
-                foundation1.setPosition(.66);             //once pressed, will check whether or not foundup is true or false
-                foundation2.setPosition(0.33);              //makes movements based on the foundup boolean
+                foundation1.setPosition(.55);             //once pressed, will check whether or not foundup is true or false
+                foundation2.setPosition(0.45);              //makes movements based on the foundup boolean
                 foundup = false;                        // checks if the last time you've hit the button has been more than
                 runtime.reset();                        // x amount of seconds, so it doesn't jitter
                 telemetry.addData("FoundationPos:", 0.8); //add telemetry to ses where foundation servos are positioned

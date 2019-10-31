@@ -15,6 +15,7 @@ public class FoundationAutoP extends LinearOpMode {
     Servo found;
     Servo found2;
     Servo clamp;
+    DcMotor lift;
     private ElapsedTime runtime = new ElapsedTime();
 
     public void MoveInch(double speed, double inches) {
@@ -34,6 +35,7 @@ public class FoundationAutoP extends LinearOpMode {
         rightFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         runtime.reset();
 
+
         //if the position is less than the number of inches, than it sets the motors to speed
         while (Math.abs(leftBack.getCurrentPosition()) <= ticks) {
             if (inches > 0) {
@@ -41,14 +43,9 @@ public class FoundationAutoP extends LinearOpMode {
                 rightBack.setPower(speed);
                 leftFront.setPower(-speed);
                 rightFront.setPower(speed);
-            } else if (inches < 0) {
-                leftBack.setPower(speed);
-                rightBack.setPower(-speed);
-                leftFront.setPower(speed);
-                rightFront.setPower(-speed);
-            }
-            if (Math.abs(leftBack.getCurrentPosition()) > ticks) {
-                break;
+                if (Math.abs(leftBack.getCurrentPosition()) > ticks) {
+                    break;
+                }
             }
 
         }
@@ -57,9 +54,8 @@ public class FoundationAutoP extends LinearOpMode {
         leftFront.setPower(0);
         rightFront.setPower(0);
 
-
-
     }
+
 
     public void runOpMode() {
         found = hardwareMap.servo.get("found1");
@@ -69,26 +65,28 @@ public class FoundationAutoP extends LinearOpMode {
         leftFront = hardwareMap.dcMotor.get("leftfront");
         rightBack = hardwareMap.dcMotor.get("rightback");
         rightFront = hardwareMap.dcMotor.get("rightfront");
+        lift = hardwareMap.dcMotor.get("lift");
 
 
         found.setPosition(1);
         found2.setPosition(0);
+        clamp.setPosition(0.1);
 
 
 
         waitForStart();
 
-        MoveInch(1, 11);
+        MoveInch(1, 12.5);
         telemetry.addData("Running MoveInch:", "1");
         telemetry.update();
         sleep(1000);
 
-        Clamp(0.55, 0.45);
+        Clamp(0.5, 0.5);
         telemetry.addData("Running Clamp:", "1");
         telemetry.update();
         sleep(1000);
 
-        MoveInch(1, -5);
+        MoveInch(-.5, 26);
         telemetry.addData("Running MoveInch:", "1");
         telemetry.update();
         sleep(1000);
@@ -98,22 +96,27 @@ public class FoundationAutoP extends LinearOpMode {
         telemetry.update();
         sleep(1000);
 
-        strafe(1, 5);
+        strafe(.5, 22);
         telemetry.addData("Running strafe:", "1");
         telemetry.update();
         sleep(1000);
 
-        MoveInch(1, 10);
+        MoveInch(1, 7);
         telemetry.addData("Running MoveInch:", "1");
         telemetry.update();
         sleep(1000);
 
-        strafe(-1, 5);
+        strafe(-1, 6);
         telemetry.addData("Running strafe:", "1");
         telemetry.update();
         sleep(1000);
 
-        strafe(1, 7);
+        MoveInch(-1, 7);
+        telemetry.addData("Running MoveInch:", "1");
+        telemetry.update();
+        sleep(1000);
+
+        strafe(1, 15);
         telemetry.addData("Running strafe:", "1");
         telemetry.update();
         sleep(1000);
@@ -129,10 +132,9 @@ public class FoundationAutoP extends LinearOpMode {
 
     }
 
-    public void strafe(double speed, double time) {
+    public void strafe(double speed, double inches) { // to go left, set speed to a negative
         // Ticks is the math for the amount of inches, ticks is paired with getcurrentposition
-
-
+        double ticks = inches * (560 / (2.95276 * Math.PI));
         //runtime isn't used, this is just a backup call which we don't need
 
 
@@ -145,23 +147,26 @@ public class FoundationAutoP extends LinearOpMode {
         rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        runtime.reset();
 
 
         //if the position is less than the number of inches, than it sets the motors to speed
-        while (runtime.milliseconds() <= time) {
-            leftBack.setPower(speed);
-            rightBack.setPower(speed);
-            leftFront.setPower(speed);
-            rightFront.setPower(speed);
-        }
-        if (runtime.milliseconds() >= time) {
-            //runOpMode();
-        }
-        // leftBack.setPower(speed * 0);
-        // rightBack.setPower(speed * 0);
-        //leftFront.setPower(speed * 0);
-        //rightFront.setPower(speed * 0);
+        while (Math.abs(leftBack.getCurrentPosition()) <= ticks) {
+            if (inches > 0) {
+                leftBack.setPower(speed);
+                rightBack.setPower(speed);
+                leftFront.setPower(-speed);
+                rightFront.setPower(-speed);
+                if (Math.abs(leftBack.getCurrentPosition()) > ticks) {
+                    break;
+                }
+            }
 
+        }
+        leftBack.setPower(0);
+        rightBack.setPower(0);
+        leftFront.setPower(0);
+        rightFront.setPower(0);
 
     }
 }
