@@ -153,8 +153,8 @@ public class Methods extends LinearOpMode {
         leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         runtime.reset();
@@ -236,10 +236,17 @@ public class Methods extends LinearOpMode {
         rightFront = hardwareMap.dcMotor.get("rightfront");
         lift = hardwareMap.dcMotor.get("lift");
 
+        lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+
         found.setPosition(1);
         found2.setPosition(0);
         clamp.setPosition(0.1);
-        liftPower(LiftDown);
+        //liftPower(LiftDown, );
 
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
 
@@ -266,18 +273,31 @@ public class Methods extends LinearOpMode {
         telemetry.update();
     }
 
-    public void liftPower(int position) {
-        if (opModeIsActive() && (lift.getCurrentPosition() < position || lift.getCurrentPosition() > position)) {
-            if (lift.getCurrentPosition() < position) {
-                while (opModeIsActive() && lift.getCurrentPosition() <= position - 15) {
+    public void liftPower(double encoderChange, double power) {
+        /*
+        if (opModeIsActive() && (lift.getCurrentPosition() < encoderChange || lift.getCurrentPosition() > encoderChange)) {
+            if (lift.getCurrentPosition() < encoderChange) {
+                while (opModeIsActive() && lift.getCurrentPosition() <= encoderChange - 15) {
                     lift.setPower(0.5);
                 }
-            } else if (lift.getCurrentPosition() > position) {
-                while (opModeIsActive() && lift.getCurrentPosition() >= position + 15) {
+            } else if (lift.getCurrentPosition() > encoderChange) {
+                while (opModeIsActive() && lift.getCurrentPosition() >= encoderChange + 15) {
                     lift.setPower(-0.5);
                 }
             }
         }
+        */
+
+        lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        if (encoderChange > 0) {
+            while (lift.getCurrentPosition() < encoderChange && opModeIsActive()) lift.setPower(power);
+        }
+        else {
+            while (lift.getCurrentPosition() > encoderChange && opModeIsActive()) lift.setPower(-power);
+        }
+        lift.setPower(0);
+
     }
 
     public void GrabBrick(double targetpos) {

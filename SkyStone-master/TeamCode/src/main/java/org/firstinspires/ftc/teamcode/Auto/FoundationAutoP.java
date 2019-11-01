@@ -28,7 +28,7 @@ public class FoundationAutoP extends Methods {
         telemetry.addData("Mode", "running");
         telemetry.update();
 
-        MoveInch(1, 12.5);
+        MoveInch(.5, 28);
         telemetry.addData("Running MoveInch1:", "complete");
         telemetry.update();
         sleep(1000);
@@ -38,7 +38,7 @@ public class FoundationAutoP extends Methods {
         telemetry.update();
         sleep(1000);
 
-        MoveInch(-.5, 26);
+        MoveInch(-.5, 27);
         telemetry.addData("Running MoveInch2:", "complete");
         telemetry.update();
         sleep(1000);
@@ -53,22 +53,22 @@ public class FoundationAutoP extends Methods {
         telemetry.update();
         sleep(1000);
 
-        MoveInch(1, 7);
+        MoveInch(1, 35);
         telemetry.addData("Running MoveInch3:", "complete");
         telemetry.update();
         sleep(1000);
 
-        Strafe(-1, 6);
+        Strafe(-1, 18);
         telemetry.addData("Running strafe2:", "complete");
         telemetry.update();
         sleep(1000);
 
-        MoveInch(-1, 7);
+        MoveInch(-1, 20);
         telemetry.addData("Running MoveInch4:", "complete");
         telemetry.update();
         sleep(1000);
 
-        Strafe(1, 15);
+        Strafe(1, 20);
         telemetry.addData("Running strafe3:", "complete");
         telemetry.update();
         sleep(1000);

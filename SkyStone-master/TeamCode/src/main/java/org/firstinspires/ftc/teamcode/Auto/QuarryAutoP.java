@@ -12,7 +12,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 @Autonomous(group = "godly", name = "QuarryAutoP")
-public class QuarryAutoP extends FoundationAutoP {
+public class QuarryAutoP extends Methods {
 
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -23,6 +23,8 @@ public class QuarryAutoP extends FoundationAutoP {
         lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         waitForStart();
+
+        liftPower(200, 0.5);
 
         MoveInch(.75, 7);
         telemetry.addData("Moving to get block:", "complete");
