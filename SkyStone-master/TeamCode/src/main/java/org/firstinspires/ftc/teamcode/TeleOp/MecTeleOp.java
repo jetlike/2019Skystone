@@ -17,13 +17,17 @@ public class MecTeleOp extends OpMode {
     DcMotor rb;
 
     Servo clamp;
-    double lasta = 0;
-    boolean clampb = true;
+    double clampb = 0;
+    boolean clampup = true;
 
     Servo foundation1;
     Servo foundation2;
     double foundb = 0;
     boolean foundup = true;
+
+    Servo capstone;
+    double capb = 0;
+    boolean capup = true;
 
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -50,11 +54,13 @@ public class MecTeleOp extends OpMode {
         clamp = hardwareMap.servo.get("clamp");
         foundation1 = hardwareMap.servo.get("found1");
         foundation2 = hardwareMap.servo.get("found2");
+        capstone = hardwareMap.servo.get("capstone");
 
-        clamp.setPosition(0.1); //this is when clampb is true
+        clamp.setPosition(0.1); //this is when clampup is true
 
         foundation1.setPosition(1);  //when foundup is true
         foundation2.setPosition(0);
+        capstone.setPosition(0); // when capup true
     }
 
     public void loop() {
@@ -114,14 +120,14 @@ public class MecTeleOp extends OpMode {
         }
 
         if (gamepad2.a) {                                              //clamp code, checks if the a button has been pressed
-            if (clampb && runtime.milliseconds() > lasta + 500) {      //once pressed, will check whether clampb is true or false
+            if (clampup && runtime.milliseconds() > clampb + 500) {      //once pressed, will check whether clampb is true or false
                 clamp.setPosition(0.85);                       //makes movements based on the clampb boolean
-                clampb = false;                              // checks if the last time you've hit the button has been more than
+                clampup = false;                              // checks if the last time you've hit the button has been more than
                 runtime.reset();                            // x amount of seconds, so it doesn't jitter
                 telemetry.addData("ClampPos:", 0.6); //add telemetry to see where clamp is positioned
-            } else if (!clampb && runtime.milliseconds() > lasta + 500) {
+            } else if (!clampup && runtime.milliseconds() > clampb + 500) {
                 clamp.setPosition(0.1);
-                clampb = true;
+                clampup = true;
                 runtime.reset();
                 telemetry.addData("ClampPos:", 0.1); //add telemetry to see where clamp is positioned
             }
@@ -140,6 +146,20 @@ public class MecTeleOp extends OpMode {
                 foundup = true;
                 runtime.reset();
                 telemetry.addData("FoundationPos:", 0.1); //add telemetry to ses where foundation servos are positioned
+            }
+        }
+
+        if (gamepad2.x) {
+            if (capup && runtime.milliseconds() > capb + 500) {
+                capstone.setPosition(1);
+                capup = false;
+                runtime.reset();
+                telemetry.addData("CapstonePos:", 1);
+            } else if (!capup && runtime.milliseconds() > capb + 500) {
+                capstone.setPosition(0);
+                capup = true;
+                runtime.reset();
+                telemetry.addData("CapstonePos:", 0);
             }
         }
 

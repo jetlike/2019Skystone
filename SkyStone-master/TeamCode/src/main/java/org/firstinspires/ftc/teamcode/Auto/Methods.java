@@ -142,6 +142,15 @@ public class Methods extends LinearOpMode {
         resetAngle();
     }
 
+
+    public void FoundationClamp(double found1val, double found2val) {
+
+        found.setPosition(found1val);
+        found2.setPosition(found2val);
+
+
+    }
+
     public void MoveInch(double speed, double inches) {
         // Ticks is the math for the amount of inches, ticks is paired with getcurrentposition
         double ticks = inches * (560 / (2.95276 * Math.PI));
@@ -180,13 +189,6 @@ public class Methods extends LinearOpMode {
 
     }
 
-    public void FoundationClamp(double found1val, double found2val) {
-
-        found.setPosition(found1val);
-        found2.setPosition(found2val);
-
-
-    }
 
     public void Strafe(double speed, double inches) { // to go left, set speed to a negative
         // Ticks is the math for the amount of inches, ticks is paired with getcurrentposition
@@ -291,10 +293,11 @@ public class Methods extends LinearOpMode {
         lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         if (encoderChange > 0) {
-            while (lift.getCurrentPosition() < encoderChange && opModeIsActive()) lift.setPower(power);
-        }
-        else {
-            while (lift.getCurrentPosition() > encoderChange && opModeIsActive()) lift.setPower(-power);
+            while (lift.getCurrentPosition() < encoderChange && opModeIsActive())
+                lift.setPower(power);
+        } else {
+            while (lift.getCurrentPosition() > encoderChange && opModeIsActive())
+                lift.setPower(-power);
         }
         lift.setPower(0);
 
