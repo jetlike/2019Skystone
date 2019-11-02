@@ -11,8 +11,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
-@Autonomous(group = "godly", name = "QuarryAutoP")
-public class QuarryAutoP extends Methods {
+@Autonomous(group = "godly", name = "QuarryAutoBlue")
+public class QuarryAutoBlue extends Methods {
 
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -20,13 +20,11 @@ public class QuarryAutoP extends Methods {
 
         ready();
 
-        lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
         waitForStart();
+        telemetry.addData("Mode", "running");
+        telemetry.update();
 
-        liftPower(200, 0.5);
-
-        MoveInch(.75, 7);
+        MoveInch(.75, 24);
         telemetry.addData("Moving to get block:", "complete");
         telemetry.update();
         sleep(1000);
@@ -34,66 +32,66 @@ public class QuarryAutoP extends Methods {
         GrabBrick(0.85);
         telemetry.addData("Grabbing the block:", "complete");
         telemetry.update();
-        sleep(1500);
+        sleep(1000);
 
-        MoveInch(-0.75, 2);
+        telemetry.addData("lifting lift a little", "complete");
+        liftPower(-200,0.4);
+        telemetry.addData("lifting lift a little", "complete");
+        telemetry.update();
+        sleep(1000);
+
+        MoveInch(-0.75, 4);
         telemetry.addData("Moving backward to deliver", "complete");
         telemetry.update();
         sleep(1000);
 
-        rotate(90, .7);
-        telemetry.addData("Turning:", "complete");
+        Strafe(-.5, 30);
+        telemetry.addData("strafing to deliver", "complete");
         telemetry.update();
         sleep(1000);
 
-        MoveInch(.6,12.5);
+        GrabBrick(0.6);
         telemetry.addData("Delivering", "complete");
         telemetry.update();
         sleep(1000);
 
-        GrabBrick(0.1);
-        telemetry.addData("dropping the block", "complete");
+        Strafe(0.5, 54);
+        telemetry.addData("moving back for 2nd one", "complete");
         telemetry.update();
         sleep(1000);
 
-        MoveInch(-0.6, 9 );
-        telemetry.addData("moving back", "complete");
+        liftPower(0, 0.4);
+        telemetry.addData("putting lift down:", "complete");
         telemetry.update();
         sleep(1000);
 
-        rotate(-90, 0.7);
-        telemetry.addData("turning", "complete");
-        telemetry.update();
-        sleep(1000);
-
-        MoveInch(.75, 2);
-        telemetry.addData("moving to get block", "complete");
+        MoveInch(0.5, 4);
+        telemetry.addData("moving in for 2nd one", "complete");
         telemetry.update();
         sleep(1000);
 
         GrabBrick(0.85);
-        telemetry.addData("grab the block", "complete");
+        telemetry.addData("grabbing brick", "complete");
+        telemetry.update();
+        sleep(1000);
+
+        liftPower(-200, .4);
+        telemetry.addData("moving back for 2nd one", "complete");
+        telemetry.update();
+        sleep(1000);
+
+        MoveInch(-.75, 4);
+        telemetry.addData("moving back", "complete");
+        telemetry.update();
+        sleep(1000);
+
+        Strafe(-.5, 54);
+        telemetry.addData("strafing to deliver, and parking", "done with auto");
         telemetry.update();
         sleep(1500);
 
-        MoveInch(-0.75, 2);
-        telemetry.addData("move back to deliver", "complete");
-        telemetry.update();
-        sleep(1000);
 
-        rotate(90, 0.7);
-        telemetry.addData("turning to deliver", "complete");
-        telemetry.update();
-        sleep(1000);
-
-        MoveInch(0.6, 9);
-        telemetry.addData("delivering", "complete");
-        telemetry.update();
-        sleep(1000);
     }
-
-
-
 
 
 }

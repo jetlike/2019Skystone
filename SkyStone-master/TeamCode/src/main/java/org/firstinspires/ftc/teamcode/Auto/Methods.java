@@ -19,6 +19,7 @@ public class Methods extends LinearOpMode {
     Servo found;
     Servo found2;
     Servo clamp;
+    Servo capstone;
     DcMotor lift;
     public int LiftDown = 200;
     public int LiftUp = 1000;
@@ -237,6 +238,7 @@ public class Methods extends LinearOpMode {
         rightBack = hardwareMap.dcMotor.get("rightback");
         rightFront = hardwareMap.dcMotor.get("rightfront");
         lift = hardwareMap.dcMotor.get("lift");
+        capstone = hardwareMap.servo.get("capstone");
 
         lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -247,7 +249,9 @@ public class Methods extends LinearOpMode {
 
         found.setPosition(1);
         found2.setPosition(0);
-        clamp.setPosition(0.1);
+        clamp.setPosition(0);
+        capstone.setPosition(0.3);
+
         //liftPower(LiftDown, );
 
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();

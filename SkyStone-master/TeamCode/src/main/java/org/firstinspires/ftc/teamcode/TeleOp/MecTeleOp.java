@@ -51,6 +51,7 @@ public class MecTeleOp extends OpMode {
 
 
 
+
         clamp = hardwareMap.servo.get("clamp");
         foundation1 = hardwareMap.servo.get("found1");
         foundation2 = hardwareMap.servo.get("found2");
@@ -60,7 +61,7 @@ public class MecTeleOp extends OpMode {
 
         foundation1.setPosition(1);  //when foundup is true
         foundation2.setPosition(0);
-        capstone.setPosition(0); // when capup true
+        capstone.setPosition(0.3); // when capup true
     }
 
     public void loop() {
@@ -113,9 +114,11 @@ public class MecTeleOp extends OpMode {
         if (Math.abs(gamepad2.right_stick_y) > .1) {            //lift code;easy stuff
             lift.setPower(gamepad2.right_stick_y);
             telemetry.addData("Lift Value:", gamepad2.right_stick_y); //add telemetry to see how much power lift is getting
+            telemetry.addData("EncoderVal:", lift.getCurrentPosition()); //encoder check
         } else {
             lift.setPower(0);
             telemetry.addData("Lift Value:", gamepad2.right_stick_y); //add telemetry to see how much power lift is getting
+            telemetry.addData("EncoderVal:", lift.getCurrentPosition());
 
         }
 
@@ -151,12 +154,12 @@ public class MecTeleOp extends OpMode {
 
         if (gamepad2.x) {
             if (capup && runtime.milliseconds() > capb + 500) {
-                capstone.setPosition(1);
+                capstone.setPosition(0.8);
                 capup = false;
                 runtime.reset();
                 telemetry.addData("CapstonePos:", 1);
             } else if (!capup && runtime.milliseconds() > capb + 500) {
-                capstone.setPosition(0);
+                capstone.setPosition(0.3);
                 capup = true;
                 runtime.reset();
                 telemetry.addData("CapstonePos:", 0);

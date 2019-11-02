@@ -12,8 +12,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
-@Autonomous(group = "godly", name = "FoundationAutoP")
-public class FoundationAutoP extends Methods {
+@Autonomous(group = "godly", name = "FoundationAutoBlue")
+public class FoundationAutoBlue extends Methods {
 
 
     private ElapsedTime runtime = new ElapsedTime();
@@ -38,7 +38,7 @@ public class FoundationAutoP extends Methods {
         telemetry.update();
         sleep(1000);
 
-        MoveInch(-.5, 27);
+        MoveInch(-.5, 29);
         telemetry.addData("Running MoveInch2:", "complete");
         telemetry.update();
         sleep(1000);
@@ -53,25 +53,34 @@ public class FoundationAutoP extends Methods {
         telemetry.update();
         sleep(1000);
 
-        MoveInch(1, 35);
+        MoveInch(.4, 35);
         telemetry.addData("Running MoveInch3:", "complete");
         telemetry.update();
         sleep(1000);
 
-        Strafe(-1, 18);
+        Strafe(-0.5, 24);
         telemetry.addData("Running strafe2:", "complete");
         telemetry.update();
         sleep(1000);
 
-        MoveInch(-1, 20);
+        GrabBrick(0.85);
+        telemetry.addData("Putting the clamp down", "complete");
+        telemetry.update();
+        sleep(1000);
+
+        MoveInch(-.5, 25);
         telemetry.addData("Running MoveInch4:", "complete");
         telemetry.update();
         sleep(1000);
 
-        Strafe(1, 20);
+        Strafe(.5, 40);
         telemetry.addData("Running strafe3:", "complete");
         telemetry.update();
         sleep(1000);
+
+        MoveInch(-0.2, 4);
+        telemetry.addData("parking:", "done with auto");
+        telemetry.update();
 
 
     }
