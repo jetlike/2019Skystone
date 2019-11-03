@@ -171,7 +171,7 @@ public class Methods extends LinearOpMode {
 
 
         //if the position is less than the number of inches, than it sets the motors to speed
-        while (Math.abs(leftBack.getCurrentPosition()) <= ticks) {
+        while (Math.abs(leftBack.getCurrentPosition()) <= ticks && opModeIsActive()) {
             if (inches > 0) {
                 leftBack.setPower(-speed);
                 rightBack.setPower(speed);
@@ -210,7 +210,7 @@ public class Methods extends LinearOpMode {
 
 
         //if the position is less than the number of inches, than it sets the motors to speed
-        while (Math.abs(leftBack.getCurrentPosition()) <= ticks) {
+        while (Math.abs(leftBack.getCurrentPosition()) <= ticks && opModeIsActive()) {
             if (inches > 0) {
                 leftBack.setPower(speed);
                 rightBack.setPower(speed);
@@ -251,8 +251,7 @@ public class Methods extends LinearOpMode {
         found2.setPosition(0);
         clamp.setPosition(0);
         capstone.setPosition(0.3);
-
-        //liftPower(LiftDown, );
+        liftPower(-200, 1);
 
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
 
@@ -280,7 +279,7 @@ public class Methods extends LinearOpMode {
     }
 
     public void liftPower(double encoderChange, double power) {
-        /*
+
         if (opModeIsActive() && (lift.getCurrentPosition() < encoderChange || lift.getCurrentPosition() > encoderChange)) {
             if (lift.getCurrentPosition() < encoderChange) {
                 while (opModeIsActive() && lift.getCurrentPosition() <= encoderChange - 15) {
@@ -292,9 +291,10 @@ public class Methods extends LinearOpMode {
                 }
             }
         }
-        */
+        lift.setPower(0);
 
-        lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        /*lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        idle();
 
         if (encoderChange > 0) {
             while (lift.getCurrentPosition() < encoderChange && opModeIsActive())
@@ -303,17 +303,14 @@ public class Methods extends LinearOpMode {
             while (lift.getCurrentPosition() > encoderChange && opModeIsActive())
                 lift.setPower(-power);
         }
-        lift.setPower(0);
+        lift.setPower(0);*/
 
     }
 
     public void GrabBrick(double targetpos) {
         runtime.reset();
-        while (runtime.milliseconds() < 2000) {
+        while (runtime.milliseconds() < 2000 && opModeIsActive()) {
             clamp.setPosition(targetpos);
-            if (runtime.milliseconds() > 2000) {
-                break;
-            }
         }
     }
 
