@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
-@Autonomous(group = "godly", name = "QuarryAutoBlue")
+@Autonomous(group = "godlyQuarry", name = "QuarryAutoBlue")
 public class QuarryAutoBlue extends Methods {
 
     private ElapsedTime runtime = new ElapsedTime();

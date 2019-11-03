@@ -12,7 +12,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
-@Autonomous(group = "godly", name = "FoundationAutoBlue")
+@Autonomous(group = "godlyFoundation", name = "FoundationAutoBlue")
 public class FoundationAutoBlue extends Methods {
 
 

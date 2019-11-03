@@ -12,7 +12,7 @@ package org.firstinspires.ftc.teamcode.Auto;
         import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
         import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
-@Autonomous(group = "godly", name = "Park")
+@Autonomous(group = "godlyAlliance", name = "Park")
 public class Park extends Methods {
 
 
