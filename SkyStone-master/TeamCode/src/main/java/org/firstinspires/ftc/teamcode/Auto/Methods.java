@@ -308,7 +308,13 @@ public class Methods extends LinearOpMode {
     }
 
     public void GrabBrick(double targetpos) {
-        clamp.setPosition(targetpos);
+        runtime.reset();
+        while (runtime.milliseconds() < 2000) {
+            clamp.setPosition(targetpos);
+            if (runtime.milliseconds() > 2000) {
+                break;
+            }
+        }
     }
 
     public void runOpMode() {

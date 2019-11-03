@@ -57,7 +57,7 @@ public class MecTeleOp extends OpMode {
         foundation2 = hardwareMap.servo.get("found2");
         capstone = hardwareMap.servo.get("capstone");
 
-        clamp.setPosition(0.1); //this is when clampup is true
+        clamp.setPosition(0.85); //this is when clampup is true
 
         foundation1.setPosition(1);  //when foundup is true
         foundation2.setPosition(0);
@@ -111,9 +111,9 @@ public class MecTeleOp extends OpMode {
         }
 
 
-        if (Math.abs(gamepad2.right_stick_y) > .1) {            //lift code;easy stuff
-            lift.setPower(gamepad2.right_stick_y);
-            telemetry.addData("Lift Value:", gamepad2.right_stick_y); //add telemetry to see how much power lift is getting
+        if (Math.abs(gamepad2.left_stick_y) > .1) {            //lift code;easy stuff
+            lift.setPower(gamepad2.left_stick_y);
+            telemetry.addData("Lift Value:", gamepad2.left_stick_y); //add telemetry to see how much power lift is getting
             telemetry.addData("EncoderVal:", lift.getCurrentPosition()); //encoder check
         } else {
             lift.setPower(0);
@@ -139,7 +139,7 @@ public class MecTeleOp extends OpMode {
         if (gamepad2.b) {                                         //foundation servo code, checks if the b button has been pressed
             if (foundup && runtime.milliseconds() > foundb + 500) {
                 foundation1.setPosition(.55);             //once pressed, will check whether or not foundup is true or false
-                foundation2.setPosition(0.45);              //makes movements based on the foundup boolean
+                foundation2.setPosition(0.48);              //makes movements based on the foundup boolean
                 foundup = false;                        // checks if the last time you've hit the button has been more than
                 runtime.reset();                        // x amount of seconds, so it doesn't jitter
                 telemetry.addData("FoundationPos:", 0.8); //add telemetry to ses where foundation servos are positioned
