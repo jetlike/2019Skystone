@@ -20,76 +20,59 @@ public class QuarryAutoBlue extends Methods {
 
         ready();
 
+
         waitForStart();
         telemetry.addData("Mode", "running");
         telemetry.update();
 
-
         while (!isStopRequested() && opModeIsActive()) {
-            MoveInch(.5, 25);
-            telemetry.addData("Moving to get block:", "complete");
-            telemetry.update();
-            sleep(1000);
+
+            liftPower(7635, 1); //have to do it here, because for some whack reason, it doesn't work in the ready method
+
+
+            MoveInch(.4, 25.8);
+            sleep(400);
 
             GrabBrick(0.85);
-            telemetry.addData("Grabbing the block:", "complete");
-            telemetry.update();
-            sleep(1000);
+            sleep(400);
 
-            liftPower(-586, 1);
-            telemetry.addData("lifting lift a little", "complete");
-            telemetry.update();
-            sleep(1000);
+            liftPower(7250, 1);
+            sleep(400);
 
-            MoveInch(-0.75, 4);
-            telemetry.addData("Moving backward to deliver", "complete");
-            telemetry.update();
-            sleep(1000);
+            MoveInch(-1, 6);
+            sleep(400);
 
-            Strafe(-.5, 32);
-            telemetry.addData("strafing to deliver", "complete");
-            telemetry.update();
-            sleep(1000);
+            Strafe(-.5, 42);
+            sleep(200);
 
             GrabBrick(0.6);
-            telemetry.addData("Delivering", "complete");
-            telemetry.update();
-            sleep(1000);
+            sleep(200);
 
-            Strafe(0.5, 46);
-            telemetry.addData("moving back for 2nd one", "complete");
-            telemetry.update();
-            sleep(1000);
+            MoveInch(-1, 4);
+            sleep(400);
 
-            liftPower(-200, 0.4);
-            telemetry.addData("putting lift down:", "complete");
-            telemetry.update();
-            sleep(1000);
+            Strafe(0.5, 55.25);
+            sleep(400);
 
-            MoveInch(0.5, 4);
-            telemetry.addData("moving in for 2nd one", "complete");
-            telemetry.update();
-            sleep(1000);
+            liftPower(7635, 0.4);
+            sleep(400);
+
+            MoveInchGlide(0.43, 13.5);
+            sleep(400);
 
             GrabBrick(0.85);
-            telemetry.addData("grabbing brick", "complete");
-            telemetry.update();
-            sleep(1000);
+            sleep(400);
 
-            liftPower(-586, .4);
-            telemetry.addData("moving back for 2nd one", "complete");
-            telemetry.update();
-            sleep(1000);
+            liftPower(7250, .4);
+            sleep(400);
 
-            MoveInch(-.75, 4);
-            telemetry.addData("moving back", "complete");
-            telemetry.update();
-            sleep(1000);
+            MoveInch(-.8, 8);
+            sleep(400);
 
-            Strafe(-.5, 54);
-            telemetry.addData("strafing to deliver, and parking", "done with auto");
-            telemetry.update();
-            sleep(1500);
+            Strafe(-.5, 52);
+            sleep(200);
+
+            MoveInch(.4, 4);
             break;
         }
     }

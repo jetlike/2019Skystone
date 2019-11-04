@@ -166,6 +166,7 @@ public class MecTeleOp extends OpMode {
             }
         }
 
+
         telemetry.update(); //have to display the added data
 
     }
