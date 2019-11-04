@@ -29,6 +29,7 @@ public class Park extends Methods {
         telemetry.addData("Mode", "running");
         telemetry.update();
 
+        while(!isStopRequested() && opModeIsActive())
         MoveInch(.6, 12);
         telemetry.addData("moving forward to park:", "autocomplete");
         telemetry.update();

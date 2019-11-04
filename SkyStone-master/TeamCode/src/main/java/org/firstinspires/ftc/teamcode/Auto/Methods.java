@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.teamcode.Auto;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
@@ -21,14 +23,12 @@ public class Methods extends LinearOpMode {
     Servo clamp;
     Servo capstone;
     DcMotor lift;
-    public double error;
-    public int LiftDown = 200;
-    public int LiftUp = 1000;
-    private Orientation angles;
 
     public BNO055IMU imu;
-    Orientation lastAngles = new Orientation();
-    double globalAngle, power = 0.30, correction;
+    private Orientation angles;
+    Acceleration gravity;
+    private BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+
 
     public ElapsedTime runtime = new ElapsedTime();
 
@@ -153,15 +153,16 @@ public class Methods extends LinearOpMode {
                 rightBack.setPower(speed);
                 leftFront.setPower(-speed);
                 rightFront.setPower(-speed);
+                if (Math.abs(leftBack.getCurrentPosition()) > ticks) {
+                    break;
+                }
             }
-            if (Math.abs(leftBack.getCurrentPosition()) > ticks) {
-                break;
-            }
-            leftBack.setPower(0);
-            rightBack.setPower(0);
-            leftFront.setPower(0);
-            rightFront.setPower(0);
+
         }
+        leftBack.setPower(0);
+        rightBack.setPower(0);
+        leftFront.setPower(0);
+        rightFront.setPower(0);
     }
 
     public void StrafeGyro(double speed, double inches, double currentAng) { // to go left, set speed to a negative
@@ -187,34 +188,59 @@ public class Methods extends LinearOpMode {
             if (inches > 0) {
                 if (getGyroYaw() < currentAng) {
                     leftFront.setPower(-speed);
+                    telemetry.addData("leftFrontPow:", -speed);
                     if (Math.abs(speed - ((currentAng - getGyroYaw()) * .01)) < .2) {
-                        if (speed - ((currentAng - getGyroYaw()) * .01) > 0)
+                        if (speed - ((currentAng - getGyroYaw()) * .01) > 0) {
                             leftBack.setPower(.2);
-                        else
+                            telemetry.addData("leftBackPow:", 0.2);
+                        } else {
                             leftBack.setPower(-.2);
+                            telemetry.addData("leftBackPow:", -0.2);
+
+                        }
                     } else {
-                        leftBack.setPower(speed - ((currentAng -getGyroYaw()) * .01));
+                        leftBack.setPower(speed - ((currentAng - getGyroYaw()) * .01));
+                        telemetry.addData("leftBackPow:", speed - ((currentAng - getGyroYaw()) * .01));
+
                     }
                     rightBack.setPower(speed);
-                    if (Math.abs(-speed - ((currentAng -getGyroYaw()) * .01)) <.2){
-                        if (-speed - ((currentAng -getGyroYaw()) * .01) >0)
-                        rightFront.setPower(.2);
-                        else
-                        rightFront.setPower(-.2);
-                    } else{
-                        rightFront.setPower(-speed - ((currentAng -getGyroYaw()) * .01));
+                    telemetry.addData("rightBackPow:", speed);
+
+                    if (Math.abs(-speed - ((currentAng - getGyroYaw()) * .01)) < .2) {
+                        if (-speed - ((currentAng - getGyroYaw()) * .01) > 0) {
+                            rightFront.setPower(.2);
+                            telemetry.addData("rightFrontPow:", 0.2);
+
+                        } else {
+                            rightFront.setPower(-.2);
+                            telemetry.addData("rightFrontPow:", -0.2);
+
+                        }
+                    } else {
+                        rightFront.setPower(-speed - ((currentAng - getGyroYaw()) * .01));
+                        telemetry.addData("rightFrontPow:", -speed - ((currentAng - getGyroYaw()) * .01));
+
                     }
 
-                } else if (getGyroYaw() > currentAng){
+                } else if (getGyroYaw() > currentAng) {
                     leftFront.setPower(-speed + ((getGyroYaw() - currentAng) * .01));
                     leftBack.setPower(speed);
                     rightBack.setPower(speed + ((getGyroYaw() - currentAng) * .01));
                     rightFront.setPower(-speed);
-                } else{
+                    telemetry.addData("leftFrontPow:", -speed + ((getGyroYaw() - currentAng) * .01));
+                    telemetry.addData("leftBackPow:", speed);
+                    telemetry.addData("rightBackPow:", speed + ((getGyroYaw() - currentAng) * .01));
+                    telemetry.addData("rightFrontPow:", -speed);
+                } else {
                     leftFront.setPower(-speed);
                     leftBack.setPower(speed);
                     rightBack.setPower(speed);
                     rightFront.setPower(-speed);
+                    telemetry.addData("leftFrontPow:", -speed);
+                    telemetry.addData("leftBackPow:", speed);
+                    telemetry.addData("rightBackPow:", speed);
+                    telemetry.addData("rightFrontPow:", -speed);
+
                 }
             }
             if (Math.abs(leftBack.getCurrentPosition()) > ticks) {
@@ -222,7 +248,8 @@ public class Methods extends LinearOpMode {
 
             }
 
-
+            telemetry.addData("imuYawAng:", getGyroYaw());
+            telemetry.update();
         }
         leftBack.setPower(0);
         rightBack.setPower(0);
@@ -257,18 +284,15 @@ public class Methods extends LinearOpMode {
             capstone.setPosition(0.3);
 
             BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-
-            parameters.mode = BNO055IMU.SensorMode.IMU;
             parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
             parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-            parameters.loggingEnabled = false;
+            parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
+            parameters.loggingEnabled = true;
+            parameters.loggingTag = "IMU";
+            parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
 
-            imu = hardwareMap.get(BNO055IMU.class, "imu");
-
+            imu = this.hardwareMap.get(BNO055IMU.class, "imu");
             imu.initialize(parameters);
-
-            telemetry.addData("Mode", "calibrating...");
-            telemetry.update();
 
             // make sure the imu gyro is calibrated before continuing.
             while (!isStopRequested() && !imu.isGyroCalibrated()) {
@@ -277,14 +301,13 @@ public class Methods extends LinearOpMode {
             }
 
             telemetry.addData("Mode", "waiting for start");
-            telemetry.addData("imu calib status", imu.getCalibrationStatus().toString());
+            telemetry.addData("imuYawAng:", getGyroYaw());
             telemetry.update();
             break;
         }
     }
 
     public void liftPower(double encoderChange, double power) {
-
         if (opModeIsActive() && (lift.getCurrentPosition() < encoderChange || lift.getCurrentPosition() > encoderChange)) {
             if (lift.getCurrentPosition() < encoderChange) {
                 while (opModeIsActive() && lift.getCurrentPosition() <= encoderChange - 15) {
@@ -323,5 +346,9 @@ public class Methods extends LinearOpMode {
     }
 
     public void PID(int heading) {
+        double error = heading - getGyroYaw();
+
     }
+
+
 }

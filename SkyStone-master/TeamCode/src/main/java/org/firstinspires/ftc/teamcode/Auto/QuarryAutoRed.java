@@ -11,8 +11,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
-@Autonomous(group = "godlyQuarry", name = "QuarryAutoBlue")
-public class QuarryAutoBlue extends Methods {
+@Autonomous(group = "godlyQuarry", name = "QuarryAutoRed")
+public class QuarryAutoRed extends Methods {
 
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -42,7 +42,7 @@ public class QuarryAutoBlue extends Methods {
             MoveInch(-1, 6);
             sleep(400);
 
-            Strafe(-.5, 42);
+            Strafe(.5, 42);
             sleep(200);
 
             GrabBrick(0.6);
@@ -51,7 +51,7 @@ public class QuarryAutoBlue extends Methods {
             MoveInch(-1, 4);
             sleep(400);
 
-            Strafe(0.5, 53.5);
+            Strafe(-0.5, 53.5);
             sleep(400);
 
             liftPower(-136, 0.4);
@@ -69,7 +69,7 @@ public class QuarryAutoBlue extends Methods {
             MoveInch(-.8, 8);
             sleep(400);
 
-            Strafe(-.5, 52);
+            Strafe(.5, 52);
             sleep(200);
 
             MoveInch(.4, 4);
@@ -79,5 +79,3 @@ public class QuarryAutoBlue extends Methods {
 
 
 }
-
-
