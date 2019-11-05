@@ -149,10 +149,10 @@ public class Methods extends LinearOpMode {
 
         while (Math.abs(leftBack.getCurrentPosition()) <= ticks && opModeIsActive()) {
             if (inches > 0) {
-                leftBack.setPower(speed);
-                rightBack.setPower(speed);
-                leftFront.setPower(-speed);
-                rightFront.setPower(-speed);
+                leftBack.setPower(blSpeedGyroStabilizer(speed - .05, 0, 1));
+                rightBack.setPower(brSpeedGyroStabilizer(speed - .05, 0, 1));
+                leftFront.setPower(flSpeedGyroStabilizer(speed - .05, 0, 1));
+                rightFront.setPower(frSpeedGyroStabilizer(speed - .05, 0, 1));
                 if (Math.abs(leftBack.getCurrentPosition()) > ticks) {
                     break;
                 }
@@ -166,7 +166,7 @@ public class Methods extends LinearOpMode {
     }
 
     public void StrafeGyro(double speed, double inches, double currentAng) { // to go left, set speed to a negative
-        // Ticks is the math for the amount of inches, ticks is paired with getcurrentposition
+   /*     // Ticks is the math for the amount of inches, ticks is paired with getcurrentposition
         double ticks = inches * (560 / (2.95276 * Math.PI));
         //runtime isn't used, this is just a backup call which we don't need
 
@@ -255,7 +255,82 @@ public class Methods extends LinearOpMode {
         rightBack.setPower(0);
         leftFront.setPower(0);
         rightFront.setPower(0);
+    }*/
+
+
+
+
+
+
     }
+    public double blSpeedGyroStabilizer(double speed, double currentAng, double blSpeed)
+    {
+        if (getGyroYaw() < currentAng)
+        {
+            blSpeed = speed + .05;
+        }
+        else if (getGyroYaw() > currentAng)
+        {
+            blSpeed = speed;
+        }
+        else
+        {
+            blSpeed = speed;
+        }
+        return blSpeed;
+
+    }
+    public double brSpeedGyroStabilizer(double speed, double currentAng, double brSpeed) {
+        if (getGyroYaw() < currentAng)
+        {
+            brSpeed = -speed - .05;
+        }
+        else if (getGyroYaw() > currentAng)
+        {
+            brSpeed = -speed;
+        }
+        else
+        {
+            brSpeed = -speed;
+        }
+        return  brSpeed;
+    }
+    public double flSpeedGyroStabilizer(double speed, double currentAng, double fLSpeed) {
+        if (getGyroYaw() < currentAng)
+        {
+            fLSpeed = -speed;
+        }
+        else if (getGyroYaw() > currentAng)
+        {
+            fLSpeed = -speed - .05;
+        }
+        else
+        {
+            fLSpeed = -speed;
+        }
+        return  fLSpeed;
+    }
+    public double frSpeedGyroStabilizer(double speed, double currentAng, double frSpeed) {
+        if (getGyroYaw() < currentAng)
+        {
+            frSpeed = speed;
+        }
+        else if (getGyroYaw() > currentAng)
+        {
+            frSpeed = speed + .05;
+        }
+        else
+        {
+            frSpeed = speed;
+        }
+        return  frSpeed;
+    }
+    public void GyroStablilizer2(double speed){
+        if(getGyroYaw() > 0){
+            leftBack.setPower(speed);
+        }
+    }
+
 
 
     public void ready() {

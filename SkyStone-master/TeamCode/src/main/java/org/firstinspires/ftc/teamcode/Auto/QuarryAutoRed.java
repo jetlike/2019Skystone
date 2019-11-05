@@ -30,7 +30,7 @@ public class QuarryAutoRed extends Methods {
             liftPower(-136, 1); //have to do it here, because for some whack reason, it doesn't work in the ready method
 
 
-            MoveInch(.4, 26.3);
+            MoveInch(.4, 27.1);
             sleep(400);
 
             GrabBrick(0.85);
@@ -42,7 +42,7 @@ public class QuarryAutoRed extends Methods {
             MoveInch(-1, 6);
             sleep(400);
 
-            Strafe(.5, 42);
+            Strafe(.5, 38);
             sleep(200);
 
             GrabBrick(0.6);
@@ -51,7 +51,7 @@ public class QuarryAutoRed extends Methods {
             MoveInch(-1, 4);
             sleep(400);
 
-            Strafe(-0.5, 53.5);
+            Strafe(-0.5, 60.5);
             sleep(400);
 
             liftPower(-136, 0.4);
@@ -69,10 +69,7 @@ public class QuarryAutoRed extends Methods {
             MoveInch(-.8, 8);
             sleep(400);
 
-            Strafe(.5, 52);
-            sleep(200);
-
-            MoveInch(.4, 4);
+            Strafe(.5, 48.8);
             break;
         }
     }
