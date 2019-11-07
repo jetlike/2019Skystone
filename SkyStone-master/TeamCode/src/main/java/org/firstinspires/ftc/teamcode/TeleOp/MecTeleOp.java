@@ -57,7 +57,7 @@ public class MecTeleOp extends OpMode {
         foundation2 = hardwareMap.servo.get("found2");
         capstone = hardwareMap.servo.get("capstone");
 
-        clamp.setPosition(0.85); //this is when clampup is true
+        clamp.setPosition(0.65); //this is when clampup is true
 
         foundation1.setPosition(1);  //when foundup is true
         foundation2.setPosition(0);
@@ -124,12 +124,12 @@ public class MecTeleOp extends OpMode {
 
         if (gamepad2.a) {                                              //clamp code, checks if the a button has been pressed
             if (clampup && runtime.milliseconds() > clampb + 500) {      //once pressed, will check whether clampb is true or false
-                clamp.setPosition(0.85);                       //makes movements based on the clampb boolean
+                clamp.setPosition(.1);                       //makes movements based on the clampb boolean
                 clampup = false;                              // checks if the last time you've hit the button has been more than
                 runtime.reset();                            // x amount of seconds, so it doesn't jitter
                 telemetry.addData("ClampPos:", 0.6); //add telemetry to see where clamp is positioned
             } else if (!clampup && runtime.milliseconds() > clampb + 500) {
-                clamp.setPosition(0.1);
+                clamp.setPosition(.7);
                 clampup = true;
                 runtime.reset();
                 telemetry.addData("ClampPos:", 0.1); //add telemetry to see where clamp is positioned

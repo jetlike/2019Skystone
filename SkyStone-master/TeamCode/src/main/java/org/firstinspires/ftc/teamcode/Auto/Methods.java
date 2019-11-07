@@ -149,10 +149,10 @@ public class Methods extends LinearOpMode {
 
         while (Math.abs(leftBack.getCurrentPosition()) <= ticks && opModeIsActive()) {
             if (inches > 0) {
-                leftBack.setPower(blSpeedGyroStabilizer(speed - .05, 0, 1));
-                rightBack.setPower(brSpeedGyroStabilizer(speed - .05, 0, 1));
-                leftFront.setPower(flSpeedGyroStabilizer(speed - .05, 0, 1));
-                rightFront.setPower(frSpeedGyroStabilizer(speed - .05, 0, 1));
+                leftBack.setPower(speed);
+                rightBack.setPower(speed);
+                leftFront.setPower(-speed);
+                rightFront.setPower(-speed);
                 if (Math.abs(leftBack.getCurrentPosition()) > ticks) {
                     break;
                 }
