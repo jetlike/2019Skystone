@@ -82,7 +82,7 @@ public class FoundationAutoBlue extends Methods {
             telemetry.update();
             sleep(1000);
 
-            MoveInch(-0.2, 4);
+            MoveInch(-0.2, 10);
             telemetry.addData("parking:", "done with auto");
             telemetry.update();
             break;

@@ -15,7 +15,6 @@ public class TestAny extends Methods{
 
 
         while(!isStopRequested() && opModeIsActive())
-        StrafeGyro(.5, 50, 0);
-        telemetry.addData("imuYawAng:", getGyroYaw());
+        gyrostrafe(.75,20);}
     }
-}
+

@@ -7,8 +7,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
-@TeleOp(name = "MecTeleOp", group = "godly")
-public class MecTeleOp extends OpMode {
+@TeleOp(name = "MecanumTeleOp", group = "godly")
+public class TeleOpMec extends OpMode {
 
     DcMotor lift;           //declaring stuff
     DcMotor lf;
@@ -50,8 +50,6 @@ public class MecTeleOp extends OpMode {
         rb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 
-
-
         clamp = hardwareMap.servo.get("clamp");
         foundation1 = hardwareMap.servo.get("found1");
         foundation2 = hardwareMap.servo.get("found2");
@@ -62,45 +60,47 @@ public class MecTeleOp extends OpMode {
         foundation1.setPosition(1);  //when foundup is true
         foundation2.setPosition(0);
         capstone.setPosition(0.3); // when capup true
+        telemetry.addData("gamepad1leftstickx:", gamepad1.left_stick_x);
+
     }
 
     public void loop() {
 
-        if (Math.abs(gamepad1.left_stick_y) > .1 || Math.abs(gamepad1.left_stick_x) > .1 || Math.abs(gamepad1.right_stick_x) > .1) {
-            double FLP = gamepad1.left_stick_y + -gamepad1.left_stick_x - gamepad1.right_stick_x;
+        telemetry.addData("gamepad1leftstickx:", gamepad1.left_stick_x);
+        telemetry.addData("gamepad1leftsticky:", gamepad1.left_stick_y);
+        telemetry.addData("gamepad1rightstickx:", gamepad1.right_stick_x);
+
+
+        if (Math.abs(gamepad1.left_stick_y) > 0.1 || Math.abs(gamepad1.left_stick_x) > 0.1 || Math.abs(gamepad1.right_stick_x) > 0.1) {
+            double FLP = gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x;
             double FRP = -gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x;
             double BLP = gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x;
-            double BRP = -gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x;  //checks if sticks have been moved
-            //then calculates power based on movement of sticks
+            double BRP = -gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x;
+
             double max = Math.max(Math.max(Math.abs(FLP), Math.abs(FRP)), Math.max(Math.abs(BLP), Math.abs(BRP)));
-            //calculates the max of the powers, used to see if
-            if (max > 1) {                                                        //scaling of power is needed
-                FLP /= max;    //if scaling is needed this does the job
+
+            if (max > 1) {
+                FLP /= max;
                 FRP /= max;
                 BLP /= max;
                 BRP /= max;
             }
 
-
-
-            if (gamepad1.right_trigger > 0.1) { //if you want to go slower hold down right trigger
-                lf.setPower(FLP*.35); //ez stuff
-                rf.setPower(FRP*.35);
-                lb.setPower(BLP*.35);
-                rb.setPower(BRP*.35);
-                telemetry.addData("FrontLeftPow:", FLP*.35); //add telemetry to see how much power each motor is getting
-                telemetry.addData("FrontRightPow:", FRP*.35);
-                telemetry.addData("BackLeftPow:", BLP*.35);
-                telemetry.addData("BackRightPow:", BRP*.35);
+            if (gamepad1.right_trigger > 0.1) {
+                lf.setPower(FLP * 0.35);
+                rf.setPower(FRP * 0.35);
+                lb.setPower(BLP * 0.35);
+                rb.setPower(BRP * 0.35);
+                telemetry.addData("FrontLeftPow:", FLP * 0.35);
+                telemetry.addData("FrontRightPow:", FRP * 0.35);
+                telemetry.addData("BackLeftPow:", BLP * 0.35);
+                telemetry.addData("BackRightPow:", BRP * 0.35);
             } else {
-                lf.setPower(FLP); //ez stuff
+                lf.setPower(FLP);
                 rf.setPower(FRP);
                 lb.setPower(BLP);
                 rb.setPower(BRP);
-                telemetry.addData("FrontLeftPow:", FLP); //add telemetry to see how much power each motor is getting
-                telemetry.addData("FrontRightPow:", FRP);
-                telemetry.addData("BackLeftPow:", BLP);
-                telemetry.addData("BackRightPow:", BRP);
+
             }
 
         } else {
@@ -109,7 +109,6 @@ public class MecTeleOp extends OpMode {
             lb.setPower(0);
             rb.setPower(0);
         }
-
 
         if (Math.abs(gamepad2.left_stick_y) > .1) {            //lift code;easy stuff
             lift.setPower(gamepad2.left_stick_y);
@@ -138,8 +137,8 @@ public class MecTeleOp extends OpMode {
 
         if (gamepad2.b) {                                         //foundation servo code, checks if the b button has been pressed
             if (foundup && runtime.milliseconds() > foundb + 500) {
-                foundation1.setPosition(.55);             //once pressed, will check whether or not foundup is true or false
-                foundation2.setPosition(0.48);              //makes movements based on the foundup boolean
+                foundation1.setPosition(0.5);             //once pressed, will check whether or not foundup is true or false
+                foundation2.setPosition(0.5);              //makes movements based on the foundup boolean
                 foundup = false;                        // checks if the last time you've hit the button has been more than
                 runtime.reset();                        // x amount of seconds, so it doesn't jitter
                 telemetry.addData("FoundationPos:", 0.8); //add telemetry to ses where foundation servos are positioned
@@ -169,9 +168,12 @@ public class MecTeleOp extends OpMode {
 
         telemetry.update(); //have to display the added data
 
+
     }
 
     public void stop() {
 
+
     }
 }
+
