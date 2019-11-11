@@ -27,19 +27,19 @@ public class QuarryAutoRed extends Methods {
 
         while (!isStopRequested() && opModeIsActive()) {
 
-            liftPower(1342, 1); //have to do it here, because for some whack reason, it doesn't work in the ready method
+            liftPower(299, 1); //have to do it here, because for some whack reason, it doesn't work in the ready method
 
 
-            MoveInch(.4, 28.1);
+            MoveInch(.4, 27.5);
             sleep(400);
 
             GrabBrick(.7);
             sleep(400);
 
-            liftPower(612, 1);
+            liftPower(10, 1);
             sleep(400);
 
-            MoveInch(-1, 6);
+            MoveInch(-1, 9.3);
             sleep(400);
 
             Strafe(.5, 38);
@@ -51,19 +51,19 @@ public class QuarryAutoRed extends Methods {
             MoveInch(-1, 4);
             sleep(400);
 
-            Strafe(-0.5, 60.5);
+            Strafe(-0.5, 57.5);
             sleep(400);
 
-            liftPower(1342, 0.4);
+            liftPower(299, 0.4);
             sleep(400);
 
-            MoveInchGlide(0.43, 13.8);
+            MoveInchGlide(0.43, 14.3);
             sleep(400);
 
             GrabBrick(.7);
             sleep(400);
 
-            liftPower(612, .4);
+            liftPower(10, .4);
             sleep(400);
 
             MoveInch(-.8, 8);

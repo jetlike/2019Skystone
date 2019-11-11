@@ -32,6 +32,9 @@ public class FoundationAutoBlue extends Methods {
 
         while (!isStopRequested() && opModeIsActive()) {
 
+            Strafe(-0.6, 12);
+            sleep(200);
+
             MoveInch(.5, 28);
             telemetry.addData("Running MoveInch1:", "complete");
             telemetry.update();
