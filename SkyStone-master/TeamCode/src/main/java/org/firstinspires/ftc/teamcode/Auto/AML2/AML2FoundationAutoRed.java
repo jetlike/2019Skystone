@@ -1,19 +1,10 @@
-package org.firstinspires.ftc.teamcode.Auto;
+package org.firstinspires.ftc.teamcode.Auto.AML2;
 
-import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-
-@Autonomous(group = "godlyFoundation", name = "FoundationAutoBlue")
-public class FoundationAutoBlue extends Methods {
+@Autonomous(group = "godlyFoundation", name = "FoundationAutoRed")
+public class AML2FoundationAutoRed extends AML2Methods {
 
 
     private ElapsedTime runtime = new ElapsedTime();
@@ -25,14 +16,13 @@ public class FoundationAutoBlue extends Methods {
 
             // wait for start button.
 
-
             waitForStart();
             telemetry.addData("Mode", "running");
             telemetry.update();
 
         while (!isStopRequested() && opModeIsActive()) {
 
-            Strafe(-0.6, 12);
+            Strafe(0.6, 12);
             sleep(200);
 
             MoveInch(.5, 28);
@@ -55,7 +45,7 @@ public class FoundationAutoBlue extends Methods {
             telemetry.update();
             sleep(1000);
 
-            Strafe(.5, 22);
+            Strafe(-.5, 28);
             telemetry.addData("Running strafe1:", "complete");
             telemetry.update();
             sleep(1000);
@@ -65,7 +55,7 @@ public class FoundationAutoBlue extends Methods {
             telemetry.update();
             sleep(1000);
 
-            Strafe(-0.5, 24);
+            Strafe(0.5, 24);
             telemetry.addData("Running strafe2:", "complete");
             telemetry.update();
             sleep(1000);
@@ -80,7 +70,7 @@ public class FoundationAutoBlue extends Methods {
             telemetry.update();
             sleep(1000);
 
-            Strafe(.5, 40);
+            Strafe(-.5, 46);
             telemetry.addData("Running strafe3:", "complete");
             telemetry.update();
             sleep(1000);

@@ -1,18 +1,10 @@
-package org.firstinspires.ftc.teamcode.Auto;
+package org.firstinspires.ftc.teamcode.Auto.AML2;
 
-import android.graphics.drawable.GradientDrawable;
-
-import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-
 @Autonomous(group = "godlyQuarry", name = "QuarryAutoRed")
-public class QuarryAutoRed extends Methods {
+public class AML2QuarryAutoRed extends AML2Methods {
 
     private ElapsedTime runtime = new ElapsedTime();
 
