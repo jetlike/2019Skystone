@@ -637,9 +637,7 @@ public class AML2Methods extends LinearOpMode {
         Bitmap imageBitmap = Bitmap.createBitmap(rgb.getWidth(), rgb.getHeight(), Bitmap.Config.RGB_565);
         imageBitmap.copyPixelsFromBuffer(rgb.getPixels());
 
-        telemetry.addData("Image width", imageBitmap.getWidth());
-        telemetry.addData("Image height", imageBitmap.getHeight());
-        telemetry.update();
+
         sleep(500);
 
         picture.close();
@@ -660,72 +658,70 @@ public class AML2Methods extends LinearOpMode {
 
     //True for Blue
     public String Skystone(boolean red) throws InterruptedException {
-        double avgX = 0;
-        double avgY = 0;
-        double medX = 0;
-        double medY = 0;
-        Bitmap bitmap = getBitmap();
-        int skystonePixelCount = 0;
-        ArrayList<Integer> xValues = new ArrayList<>();
-        ArrayList<Integer> yValues = new ArrayList<>();
+        if (opModeIsActive()) {
+            double avgX = 0;
+            double avgY = 0;
+            double medX = 0;
+            double medY = 0;
+            Bitmap bitmap = getBitmap();
+            int skystonePixelCount = 0;
+            ArrayList<Integer> xValues = new ArrayList<>();
+            ArrayList<Integer> yValues = new ArrayList<>();
 
-        for (int y = 0; y < bitmap.getHeight(); y++) {
-            for (int x = 0; x < bitmap.getWidth(); x++) {
-                int pixel = bitmap.getPixel(x, y);
-                if (red(pixel) <= RED_THRESHOLD && blue(pixel) <= BLUE_THRESHOLD && green(pixel) <= GREEN_THRESHOLD) {
-                    xValues.add(x);
-                    yValues.add(y);
+            for (int y = 0; y < bitmap.getHeight(); y++) {
+                for (int x = 0; x < bitmap.getWidth(); x++) {
+                    int pixel = bitmap.getPixel(x, y);
+                    if (red(pixel) <= RED_THRESHOLD && blue(pixel) <= BLUE_THRESHOLD && green(pixel) <= GREEN_THRESHOLD) {
+                        xValues.add(x);
+                        yValues.add(y);
+                    }
                 }
             }
-        }
 
-        for (int xCoor : xValues) {
-            avgX += xCoor;
-        }
-        for (int yCoor : yValues) {
-            avgY += yCoor;
-        }
-        Collections.sort(xValues);
-        Collections.sort(yValues);
-        medX = xValues.get(xValues.size()/2);
-        medY = yValues.get(yValues.size()/2);
-        avgX /= xValues.size();
-        avgY /= yValues.size();
-        if (red) {
-            if (medX < 400 && xValues.size() > 9000) {
-                skystonePosition = "1 & 4";
-                telemetry.addData("skystonePosition: ", skystonePosition);
-                telemetry.addData("xValues size", xValues.size());
-            } else if (medX < 620 && xValues.size() > 9000) {
-                skystonePosition = "2 & 5";
-                telemetry.addData("skystonePosition: ", skystonePosition);
-                telemetry.addData("xvalues size", xValues.size());
-            } else {
-                skystonePosition = "3 & 6";
-                telemetry.addData("skystonePosition: ", skystonePosition);
-                telemetry.addData("xvalues size", xValues.size());
+            for (int xCoor : xValues) {
+                avgX += xCoor;
             }
-            telemetry.update();
-        }
-        else{
-            if (medX < bitmap.getWidth() * 0.2) {
-                skystonePosition = "3 & 6";
-                telemetry.addData("skystonePosition: ", skystonePosition);
-            } else if (medX < bitmap.getWidth() * 0.5 && medX > bitmap.getWidth() * 0.2) {
-                skystonePosition = "2 & 5";
-                telemetry.addData("skystonePosition: ", skystonePosition);
-            } else {
-                skystonePosition = "1 & 4";
-                telemetry.addData("skystonePosition: ", skystonePosition);
+            for (int yCoor : yValues) {
+                avgY += yCoor;
             }
-            telemetry.update();
+            Collections.sort(xValues);
+            Collections.sort(yValues);
+            medX = xValues.get(xValues.size() / 2);
+            medY = yValues.get(yValues.size() / 2);
+            avgX /= xValues.size();
+            avgY /= yValues.size();
+            if (red) {
+                if (medX < bitmap.getWidth() * 0.33333) {
+                    skystonePosition = "1 & 4";
+                    telemetry.addData("skystonePosition: ", skystonePosition);
+                } else if (medX < bitmap.getWidth() * 0.666666 && medX > bitmap.getWidth() * 0.3333333) {
+                    skystonePosition = "2 & 5";
+                    telemetry.addData("skystonePosition: ", skystonePosition);
+                } else {
+                    skystonePosition = "3 & 6";
+                    telemetry.addData("skystonePosition: ", skystonePosition);
+                }
+                telemetry.update();
+            } else {
+                if (medX < bitmap.getWidth() * 0.33333) {
+                    skystonePosition = "3 & 6";
+                    telemetry.addData("skystonePosition: ", skystonePosition);
+                } else if (medX < bitmap.getWidth() * 0.666666 && medX > bitmap.getWidth() * 0.3333333) {
+                    skystonePosition = "2 & 5";
+                    telemetry.addData("skystonePosition: ", skystonePosition);
+                } else {
+                    skystonePosition = "1 & 4";
+                    telemetry.addData("skystonePosition: ", skystonePosition);
+                }
+                telemetry.update();
+            }
         }
         return skystonePosition;
     }
 
 
 
-    public void runOpMode() {
+    public void runOpMode() throws InterruptedException {
 
     }
 

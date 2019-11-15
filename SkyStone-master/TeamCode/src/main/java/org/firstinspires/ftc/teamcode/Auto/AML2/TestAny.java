@@ -4,11 +4,10 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Autonomous(name = "testany", group = "test")
-public class TestAny extends AML2Methods{
+public class TestAny extends AML2Methods {
     private ElapsedTime runtime = new ElapsedTime();
 
-
-    public void runOpMode() {
+    public void runOpMode() throws InterruptedException {
         ready();
 
         waitForStart();
