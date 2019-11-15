@@ -19,6 +19,7 @@ public class AML2QuarryAutoBlue extends AML2Methods {
 
         while (!isStopRequested() && opModeIsActive()) {
 
+
             liftPower(299, 1); //have to do it here, because for some whack reason, it doesn't work in the ready method
 
 

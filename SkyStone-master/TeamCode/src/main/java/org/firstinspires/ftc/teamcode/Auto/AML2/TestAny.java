@@ -14,7 +14,12 @@ public class TestAny extends AML2Methods{
         waitForStart();
 
 
-        while(!isStopRequested() && opModeIsActive())
-        gyrostrafe(.75,20);}
+        while(!isStopRequested() && opModeIsActive()){
+
+            Skystone(false);
+        }
+
     }
+}
+
 

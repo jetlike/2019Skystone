@@ -12,12 +12,44 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+
+import android.graphics.Bitmap;
+
+import static android.graphics.Color.red;
+import static android.graphics.Color.green;
+import static android.graphics.Color.blue;
+
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.vuforia.Frame;
+import com.vuforia.Image;
+import com.vuforia.PIXEL_FORMAT;
+import com.vuforia.Vuforia;
+
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.Parameters;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.concurrent.BlockingQueue;
+
+import java.util.List;
 
 public class AML2Methods extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
     private static final String LABEL_FIRST_ELEMENT = "Stone";
     private static final String LABEL_SECOND_ELEMENT = "Skystone";
+
+    public static String skystonePosition = "notFound";
+
+
+    private final int RED_THRESHOLD = 25;
+    private final int GREEN_THRESHOLD = 25;
+    private final int BLUE_THRESHOLD = 25;
 
     /*
      * IMPORTANT: You need to obtain your own license key to use Vuforia. The string below with which
@@ -218,8 +250,8 @@ public class AML2Methods extends LinearOpMode {
             if (inches > 0) {
                 leftBack.setPower(blSpeedGyroStabilizer(.75, 0));
                 rightBack.setPower(brSpeedGyroStabilizer(.75, 0, .75));
-                leftFront.setPower(-1 * (flSpeedGyroStabilizer(.75, 0, .75)));
-                rightFront.setPower(-1 * (frSpeedGyroStabilizer(.75, 0, .75)));
+                leftFront.setPower((flSpeedGyroStabilizer(.75, 0, .75)));
+                rightFront.setPower((frSpeedGyroStabilizer(.75, 0, .75)));
                 if (Math.abs(leftBack.getCurrentPosition()) > ticks) {
                     break;
                 }
@@ -491,6 +523,7 @@ public class AML2Methods extends LinearOpMode {
         /** Wait for the game to begin */
         telemetry.addData(">", "Press Play to start op mode");
     }
+
     /**
      * Initialize the Vuforia localization engine.
      */
@@ -501,7 +534,8 @@ public class AML2Methods extends LinearOpMode {
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
 
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
-        parameters.cameraName = hardwareMap.get(WebcamName.class, "Webcam 1");
+        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
+
 
         //  Instantiate the Vuforia engine
         vuforia = ClassFactory.getInstance().createVuforia(parameters);
@@ -516,12 +550,183 @@ public class AML2Methods extends LinearOpMode {
         int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
                 "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
-        tfodParameters.minimumConfidence = 0.8;
+        tfodParameters.minimumConfidence = 0.7;
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
     }
 
+    public String SkystoneVision() {
+
+        String pos = "not found yet";
+
+        if (opModeIsActive()) {
+            if (tfod != null) {
+                // getUpdatedRecognitions() will return null if no new information is available since
+                // the last time that call was made.
+                List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+                if (updatedRecognitions != null) {
+                    telemetry.addData("# Object Detected", updatedRecognitions.size());
+
+                    // step through the list of recognitions and display boundary info.
+                    int i = 0;
+                    for (Recognition recognition : updatedRecognitions) {
+                        telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f",
+                                recognition.getLeft(), recognition.getTop());
+                        if (recognition.getLeft() < 0.2 * recognition.getImageHeight()) {
+                            pos = "left";
+                        } else if (recognition.getLeft() > 0.2 * recognition.getImageWidth() && recognition.getLeft() < 0.5 * recognition.getImageWidth()) {
+                            pos = "middle";
+                        } else {
+                            pos = "right";
+                        }
+                        telemetry.addData("SkystonePos:", pos);
+                        telemetry.update();
+                    }
+                }
+
+            }
+
+            if (tfod != null) {
+                tfod.shutdown();
+            }
+        }
+        return pos;
+
+    }
+
+    public void initializeVuforia() {
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        VuforiaLocalizer.Parameters params = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+
+        params.vuforiaLicenseKey = "Acwi41P/////AAABmXAF5Uahj0aglVwEx0GLTotkFwuYvGa385NRnC3GmFdHiha7BKdStHJwB6nj4zrSBLOJ0jGEICqTReR3LiErc63MaNJf8NR/J8TUk6MOaF8xM5fa5uDU3J/7/tys+Hu1G5nlncWy3gGsHrU8lwG/rL+G0R/caVfNp0GfRtpcH7LMLDZOslSc+URv9+IF8+C0jA4JzTfM4lRkOEcIqIyTs20EZC+W3QYI7o7n700hOwq+WpoG7qMgqcrgk3+B1/hTLICE3fodM/34CQjbEONYKpGbj8IOG714CeY9qyI6WhainXidKda/QAslXEvYCDvBCZoGW/4I3TaZAJUWAeD1l5SeL/m4nuJxV9Jmai/0/9Qn";;
+        params.cameraDirection = CameraDirection.BACK;
+
+        vuforia = ClassFactory.getInstance().createVuforia(params);
+
+        Vuforia.setFrameFormat(PIXEL_FORMAT.RGB565, true);
+        vuforia.setFrameQueueCapacity(4);
+        vuforia.enableConvertFrameToBitmap();
+
+    }
+
+    public Bitmap getBitmap() throws InterruptedException {
+
+        VuforiaLocalizer.CloseableFrame picture;
+        picture = vuforia.getFrameQueue().take();
+        Image rgb = picture.getImage(1);
+
+        long numImages = picture.getNumImages();
+
+        telemetry.addData("Num images", numImages);
+        telemetry.update();
+
+        for (int i = 0; i < numImages; i++) {
+
+            int format = picture.getImage(i).getFormat();
+            if (format == PIXEL_FORMAT.RGB565) {
+                rgb = picture.getImage(i);
+                break;
+            } else {
+                telemetry.addLine("Didn't find correct RGB format");
+                telemetry.update();
+
+
+            }
+        }
+
+        Bitmap imageBitmap = Bitmap.createBitmap(rgb.getWidth(), rgb.getHeight(), Bitmap.Config.RGB_565);
+        imageBitmap.copyPixelsFromBuffer(rgb.getPixels());
+
+        telemetry.addData("Image width", imageBitmap.getWidth());
+        telemetry.addData("Image height", imageBitmap.getHeight());
+        telemetry.update();
+        sleep(500);
+
+        picture.close();
+
+
+        return imageBitmap;
+    }
+
+    public double getImageHeight() throws InterruptedException {
+        Bitmap bitmap = getBitmap();
+        return bitmap.getHeight();
+    }
+
+    public double getImageWidth() throws InterruptedException {
+        Bitmap bitmap = getBitmap();
+        return bitmap.getWidth();
+    }
+
+    //True for Blue
+    public String Skystone(boolean red) throws InterruptedException {
+        double avgX = 0;
+        double avgY = 0;
+        double medX = 0;
+        double medY = 0;
+        Bitmap bitmap = getBitmap();
+        int skystonePixelCount = 0;
+        ArrayList<Integer> xValues = new ArrayList<>();
+        ArrayList<Integer> yValues = new ArrayList<>();
+
+        for (int y = 0; y < bitmap.getHeight(); y++) {
+            for (int x = 0; x < bitmap.getWidth(); x++) {
+                int pixel = bitmap.getPixel(x, y);
+                if (red(pixel) <= RED_THRESHOLD && blue(pixel) <= BLUE_THRESHOLD && green(pixel) <= GREEN_THRESHOLD) {
+                    xValues.add(x);
+                    yValues.add(y);
+                }
+            }
+        }
+
+        for (int xCoor : xValues) {
+            avgX += xCoor;
+        }
+        for (int yCoor : yValues) {
+            avgY += yCoor;
+        }
+        Collections.sort(xValues);
+        Collections.sort(yValues);
+        medX = xValues.get(xValues.size()/2);
+        medY = yValues.get(yValues.size()/2);
+        avgX /= xValues.size();
+        avgY /= yValues.size();
+        if (red) {
+            if (medX < 400 && xValues.size() > 9000) {
+                skystonePosition = "1 & 4";
+                telemetry.addData("skystonePosition: ", skystonePosition);
+                telemetry.addData("xValues size", xValues.size());
+            } else if (medX < 620 && xValues.size() > 9000) {
+                skystonePosition = "2 & 5";
+                telemetry.addData("skystonePosition: ", skystonePosition);
+                telemetry.addData("xvalues size", xValues.size());
+            } else {
+                skystonePosition = "3 & 6";
+                telemetry.addData("skystonePosition: ", skystonePosition);
+                telemetry.addData("xvalues size", xValues.size());
+            }
+            telemetry.update();
+        }
+        else{
+            if (medX < bitmap.getWidth() * 0.2) {
+                skystonePosition = "3 & 6";
+                telemetry.addData("skystonePosition: ", skystonePosition);
+            } else if (medX < bitmap.getWidth() * 0.5 && medX > bitmap.getWidth() * 0.2) {
+                skystonePosition = "2 & 5";
+                telemetry.addData("skystonePosition: ", skystonePosition);
+            } else {
+                skystonePosition = "1 & 4";
+                telemetry.addData("skystonePosition: ", skystonePosition);
+            }
+            telemetry.update();
+        }
+        return skystonePosition;
+    }
+
+
+
     public void runOpMode() {
+
     }
 
 
