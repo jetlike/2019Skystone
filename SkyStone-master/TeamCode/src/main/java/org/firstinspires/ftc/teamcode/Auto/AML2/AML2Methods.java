@@ -22,6 +22,7 @@ import static android.graphics.Color.green;
 import static android.graphics.Color.blue;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.vuforia.CameraDevice;
 import com.vuforia.Frame;
 import com.vuforia.Image;
 import com.vuforia.PIXEL_FORMAT;
@@ -87,6 +88,7 @@ public class AML2Methods extends LinearOpMode {
     Servo clamp;
     Servo capstone;
     DcMotor lift;
+    CameraDevice camera;
 
     public BNO055IMU imu;
     private Orientation angles;
@@ -434,7 +436,7 @@ public class AML2Methods extends LinearOpMode {
 
             found.setPosition(1);
             found2.setPosition(0);
-            clamp.setPosition(0);
+            clamp.setPosition(0.7);
             capstone.setPosition(0.3);
 
             BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -453,8 +455,7 @@ public class AML2Methods extends LinearOpMode {
                 sleep(50);
                 idle();
             }
-            initVision();
-            telemetry.addData("imuYawAng:", getGyroYaw());
+            telemetry.addData("Waiting for Start:", "Press Play to Start Opmode");
             telemetry.update();
             break;
         }
@@ -490,73 +491,57 @@ public class AML2Methods extends LinearOpMode {
 
     public void GrabBrick(double targetpos) {
         runtime.reset();
-        while (runtime.milliseconds() < 1000 && opModeIsActive()) {
+        while (runtime.milliseconds() < 400 && opModeIsActive()) {
             clamp.setPosition(targetpos);
         }
     }
 
-
-    public void PID(int heading) {
-        double error = heading - getGyroYaw();
-
+    public double getTrueDiff(double origAngle) {
+        double currAngle = getGyroYaw();
+        if (currAngle >= 0 && origAngle >= 0 || currAngle <= 0 && origAngle <= 0)
+            return (currAngle - origAngle);
+        else if (Math.abs(currAngle - origAngle) <= 180)
+            return (currAngle - origAngle);
+        else if (currAngle > origAngle)
+            return -(360 - (currAngle - origAngle));
+        else
+            return (360 + (currAngle - origAngle));
     }
 
-    public void initVision() {
-// The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
-        // first.
-        initVuforia();
 
-        if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
-            initTfod();
-        } else {
-            telemetry.addData("Sorry!", "This device is not compatible with TFOD");
+    public void turnPD(double angle, double p, double d, double timeout) {      //
+        while (opModeIsActive() && !isStopRequested()) {
+            runtime.reset();
+            double kP = p / 90;
+            double kD = d / 90;
+            double currentTime = runtime.milliseconds();
+            double pastTime = 0;
+            double prevAngleDiff = getTrueDiff(-angle);
+            double angleDiff = prevAngleDiff;
+            double changePID = 0;
+            while (Math.abs(angleDiff) > .5 && runtime.seconds() < timeout && opModeIsActive()) {
+                pastTime = currentTime;
+                currentTime = runtime.milliseconds();
+                double dT = currentTime - pastTime;
+                angleDiff = getTrueDiff(-angle);
+                changePID = (angleDiff * kP) + ((angleDiff - prevAngleDiff) / dT * kD);
+               if (changePID < 0) {
+                    startMotors(changePID - .10, -changePID + .10);
+                } else {
+                    startMotors(changePID + .10, -changePID - .10);
+                }
+                telemetry.addData("P", (angleDiff * kP));
+                telemetry.addData("D", ((Math.abs(angleDiff) - Math.abs(prevAngleDiff)) / dT * kD));
+                telemetry.addData("getTrueDiffval:", getGyroYaw());
+                telemetry.update();
+                prevAngleDiff = angleDiff;
+            }
+            stopMotors();
+            break;
         }
-
-        /**
-         * Activate TensorFlow Object Detection before we wait for the start command.
-         * Do it here so that the Camera Stream window will have the TensorFlow annotations visible.
-         **/
-        if (tfod != null) {
-            tfod.activate();
-        }
-
-        /** Wait for the game to begin */
-        telemetry.addData(">", "Press Play to start op mode");
-    }
-
-    /**
-     * Initialize the Vuforia localization engine.
-     */
-    private void initVuforia() {
-        /*
-         * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
-         */
-        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
-
-        parameters.vuforiaLicenseKey = VUFORIA_KEY;
-        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
-
-
-        //  Instantiate the Vuforia engine
-        vuforia = ClassFactory.getInstance().createVuforia(parameters);
-
-        // Loading trackables is not necessary for the TensorFlow Object Detection engine.
-    }
-
-    /**
-     * Initialize the TensorFlow Object Detection engine.
-     */
-    private void initTfod() {
-        int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
-                "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
-        tfodParameters.minimumConfidence = 0.7;
-        tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
-        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
     }
 
     public String SkystoneVision() {
-
         String pos = "not found yet";
 
         if (opModeIsActive()) {
@@ -598,7 +583,7 @@ public class AML2Methods extends LinearOpMode {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         VuforiaLocalizer.Parameters params = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
 
-        params.vuforiaLicenseKey = "Acwi41P/////AAABmXAF5Uahj0aglVwEx0GLTotkFwuYvGa385NRnC3GmFdHiha7BKdStHJwB6nj4zrSBLOJ0jGEICqTReR3LiErc63MaNJf8NR/J8TUk6MOaF8xM5fa5uDU3J/7/tys+Hu1G5nlncWy3gGsHrU8lwG/rL+G0R/caVfNp0GfRtpcH7LMLDZOslSc+URv9+IF8+C0jA4JzTfM4lRkOEcIqIyTs20EZC+W3QYI7o7n700hOwq+WpoG7qMgqcrgk3+B1/hTLICE3fodM/34CQjbEONYKpGbj8IOG714CeY9qyI6WhainXidKda/QAslXEvYCDvBCZoGW/4I3TaZAJUWAeD1l5SeL/m4nuJxV9Jmai/0/9Qn";;
+        params.vuforiaLicenseKey = "Acwi41P/////AAABmXAF5Uahj0aglVwEx0GLTotkFwuYvGa385NRnC3GmFdHiha7BKdStHJwB6nj4zrSBLOJ0jGEICqTReR3LiErc63MaNJf8NR/J8TUk6MOaF8xM5fa5uDU3J/7/tys+Hu1G5nlncWy3gGsHrU8lwG/rL+G0R/caVfNp0GfRtpcH7LMLDZOslSc+URv9+IF8+C0jA4JzTfM4lRkOEcIqIyTs20EZC+W3QYI7o7n700hOwq+WpoG7qMgqcrgk3+B1/hTLICE3fodM/34CQjbEONYKpGbj8IOG714CeY9qyI6WhainXidKda/QAslXEvYCDvBCZoGW/4I3TaZAJUWAeD1l5SeL/m4nuJxV9Jmai/0/9Qn";
         params.cameraDirection = CameraDirection.BACK;
 
         vuforia = ClassFactory.getInstance().createVuforia(params);
@@ -610,7 +595,10 @@ public class AML2Methods extends LinearOpMode {
     }
 
     public Bitmap getBitmap() throws InterruptedException {
+        camera = CameraDevice.getInstance();
 
+        camera.setFlashTorchMode(true);
+        sleep(500);
         VuforiaLocalizer.CloseableFrame picture;
         picture = vuforia.getFrameQueue().take();
         Image rgb = picture.getImage(1);
@@ -637,12 +625,16 @@ public class AML2Methods extends LinearOpMode {
         Bitmap imageBitmap = Bitmap.createBitmap(rgb.getWidth(), rgb.getHeight(), Bitmap.Config.RGB_565);
         imageBitmap.copyPixelsFromBuffer(rgb.getPixels());
 
+        telemetry.addData("Image width", imageBitmap.getWidth());
+        telemetry.addData("Image height", imageBitmap.getHeight());
+        telemetry.update();
+
 
         sleep(500);
 
         picture.close();
 
-
+        camera.setFlashTorchMode(false);
         return imageBitmap;
     }
 
@@ -658,7 +650,7 @@ public class AML2Methods extends LinearOpMode {
 
     //True for Blue
     public String Skystone(boolean red) throws InterruptedException {
-        if (opModeIsActive()) {
+        while (opModeIsActive() && !isStopRequested()) {
             double avgX = 0;
             double avgY = 0;
             double medX = 0;
@@ -668,7 +660,7 @@ public class AML2Methods extends LinearOpMode {
             ArrayList<Integer> xValues = new ArrayList<>();
             ArrayList<Integer> yValues = new ArrayList<>();
 
-            for (int y = 0; y < bitmap.getHeight(); y++) {
+            for (int y = 0; y < bitmap.getHeight() / 2; y++) {
                 for (int x = 0; x < bitmap.getWidth(); x++) {
                     int pixel = bitmap.getPixel(x, y);
                     if (red(pixel) <= RED_THRESHOLD && blue(pixel) <= BLUE_THRESHOLD && green(pixel) <= GREEN_THRESHOLD) {
@@ -692,9 +684,9 @@ public class AML2Methods extends LinearOpMode {
             avgY /= yValues.size();
             if (red) {
                 if (medX < bitmap.getWidth() * 0.33333) {
-                    skystonePosition = "1 & 4";
+                    skystonePosition = "3 & 6";
                     telemetry.addData("skystonePosition: ", skystonePosition);
-                } else if (medX < bitmap.getWidth() * 0.666666 && medX > bitmap.getWidth() * 0.3333333) {
+                } else if (medX < bitmap.getWidth() * 0.66666 && medX > bitmap.getWidth() * 0.33333) {
                     skystonePosition = "2 & 5";
                     telemetry.addData("skystonePosition: ", skystonePosition);
                 } else {
@@ -703,7 +695,7 @@ public class AML2Methods extends LinearOpMode {
                 }
                 telemetry.update();
             } else {
-                if (medX < bitmap.getWidth() * 0.33333) {
+                if (medX > bitmap.getWidth() * 0.66666) {
                     skystonePosition = "3 & 6";
                     telemetry.addData("skystonePosition: ", skystonePosition);
                 } else if (medX < bitmap.getWidth() * 0.666666 && medX > bitmap.getWidth() * 0.3333333) {
@@ -715,11 +707,30 @@ public class AML2Methods extends LinearOpMode {
                 }
                 telemetry.update();
             }
+            break;
         }
         return skystonePosition;
     }
 
+    public void startMotors(double left, double right) {
+        while (!isStopRequested() && opModeIsActive()) {
+            leftFront.setPower(-left);
+            leftBack.setPower(-left);
+            rightFront.setPower(right);
+            rightBack.setPower(right);
+            break;
+        }
+    }
 
+    public void stopMotors() {
+        while (!isStopRequested() && opModeIsActive()) {
+            leftFront.setPower(0);
+            leftBack.setPower(0);
+            rightFront.setPower(0);
+            rightBack.setPower(0);
+            break;
+        }
+    }
 
     public void runOpMode() throws InterruptedException {
 

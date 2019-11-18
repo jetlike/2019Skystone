@@ -13,9 +13,10 @@ public class TestAny extends AML2Methods {
         waitForStart();
 
 
-        while(!isStopRequested() && opModeIsActive()){
+        while (!isStopRequested() && opModeIsActive()) {
 
-            Skystone(false);
+            turnPD(90,.11 ,.5,10); //
+            break;
         }
 
     }
