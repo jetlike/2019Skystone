@@ -455,6 +455,7 @@ public class AML2Methods extends LinearOpMode {
                 sleep(50);
                 idle();
             }
+            initVision();
             telemetry.addData("Waiting for Start:", "Press Play to Start Opmode");
             telemetry.update();
             break;
@@ -661,7 +662,7 @@ public class AML2Methods extends LinearOpMode {
             ArrayList<Integer> yValues = new ArrayList<>();
 
             for (int y = 0; y < bitmap.getHeight() / 2; y++) {
-                for (int x = 0; x < bitmap.getWidth(); x++) {
+                for (int x = 0; x < bitmap.getWidth() * (2.0/3); x++) {
                     int pixel = bitmap.getPixel(x, y);
                     if (red(pixel) <= RED_THRESHOLD && blue(pixel) <= BLUE_THRESHOLD && green(pixel) <= GREEN_THRESHOLD) {
                         xValues.add(x);
@@ -679,6 +680,7 @@ public class AML2Methods extends LinearOpMode {
             Collections.sort(xValues);
             Collections.sort(yValues);
             medX = xValues.get(xValues.size() / 2);
+            telemetry.addData("medX", medX);
             medY = yValues.get(yValues.size() / 2);
             avgX /= xValues.size();
             avgY /= yValues.size();
@@ -690,7 +692,7 @@ public class AML2Methods extends LinearOpMode {
                     skystonePosition = "2 & 5";
                     telemetry.addData("skystonePosition: ", skystonePosition);
                 } else {
-                    skystonePosition = "3 & 6";
+                    skystonePosition = "1 & 4";
                     telemetry.addData("skystonePosition: ", skystonePosition);
                 }
                 telemetry.update();
@@ -730,6 +732,53 @@ public class AML2Methods extends LinearOpMode {
             rightBack.setPower(0);
             break;
         }
+    }
+
+    /**
+     * Initialize the Vuforia localization engine.
+     */
+    public void initVuforia() {
+        /*
+         * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
+         */
+        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
+
+        parameters.vuforiaLicenseKey = VUFORIA_KEY;
+        parameters.cameraDirection = CameraDirection.BACK;
+
+        //  Instantiate the Vuforia engine
+        vuforia = ClassFactory.getInstance().createVuforia(parameters);
+
+        // Loading trackables is not necessary for the TensorFlow Object Detection engine.
+    }
+    public void initVision() {
+// The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
+        // first.
+        initVuforia();
+        if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
+            initTfod();
+        } else {
+            telemetry.addData("Sorry!", "This device is not compatible with TFOD");
+        }
+        /**
+         * Activate TensorFlow Object Detection before we wait for the start command.
+         * Do it here so that the Camera Stream window will have the TensorFlow annotations visible.
+         **/
+        if (tfod != null) {
+            tfod.activate();
+        }
+    }
+
+    /**
+     * Initialize the TensorFlow Object Detection engine.
+     */
+    public void initTfod() {
+        int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
+                "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
+        tfodParameters.minimumConfidence = 0.7;
+        tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
+        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
     }
 
     public void runOpMode() throws InterruptedException {
