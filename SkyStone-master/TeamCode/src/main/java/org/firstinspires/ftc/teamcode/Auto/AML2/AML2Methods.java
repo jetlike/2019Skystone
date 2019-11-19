@@ -267,7 +267,7 @@ public class AML2Methods extends LinearOpMode {
     }
 
     public void StrafeGyro(double speed, double inches, double currentAng) { // to go left, set speed to a negative
-   /*     // Ticks is the math for the amount of inches, ticks is paired with getcurrentposition
+      // Ticks is the math for the amount of inches, ticks is paired with getcurrentposition
         double ticks = inches * (560 / (2.95276 * Math.PI));
         //runtime isn't used, this is just a backup call which we don't need
 
@@ -356,10 +356,10 @@ public class AML2Methods extends LinearOpMode {
         rightBack.setPower(0);
         leftFront.setPower(0);
         rightFront.setPower(0);
-    }*/
-
-
     }
+
+
+
 
     public double blSpeedGyroStabilizer(double speed, double currentAng) {
         double blSpeed;
@@ -662,7 +662,7 @@ public class AML2Methods extends LinearOpMode {
             ArrayList<Integer> yValues = new ArrayList<>();
 
             for (int y = 0; y < bitmap.getHeight() / 2; y++) {
-                for (int x = 0; x < bitmap.getWidth() * (2.0/3); x++) {
+                for (int x = 0; x < bitmap.getWidth(); x++) {
                     int pixel = bitmap.getPixel(x, y);
                     if (red(pixel) <= RED_THRESHOLD && blue(pixel) <= BLUE_THRESHOLD && green(pixel) <= GREEN_THRESHOLD) {
                         xValues.add(x);
@@ -685,7 +685,7 @@ public class AML2Methods extends LinearOpMode {
             avgX /= xValues.size();
             avgY /= yValues.size();
             if (red) {
-                if (medX < bitmap.getWidth() * 0.33333) {
+                if (medX < bitmap.getWidth() * 0.3333) {
                     skystonePosition = "3 & 6";
                     telemetry.addData("skystonePosition: ", skystonePosition);
                 } else if (medX < bitmap.getWidth() * 0.66666 && medX > bitmap.getWidth() * 0.33333) {
@@ -697,7 +697,7 @@ public class AML2Methods extends LinearOpMode {
                 }
                 telemetry.update();
             } else {
-                if (medX > bitmap.getWidth() * 0.66666) {
+                if (medX > bitmap.getWidth() * 0.66666) {    //fact is that the pixels, start of x, start at the top right, so need to make changes based on that
                     skystonePosition = "3 & 6";
                     telemetry.addData("skystonePosition: ", skystonePosition);
                 } else if (medX < bitmap.getWidth() * 0.666666 && medX > bitmap.getWidth() * 0.3333333) {

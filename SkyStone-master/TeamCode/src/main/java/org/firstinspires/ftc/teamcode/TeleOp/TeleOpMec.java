@@ -165,7 +165,6 @@ public class TeleOpMec extends OpMode {
             }
         }
 
-
         telemetry.update(); //have to display the added data
 
 
