@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.Auto.AML2;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.Methods.AML2Methods;
+
 @Autonomous(group = "godlyQuarry", name = "QuarryAutoBlue")
 public class AML2QuarryAutoBlue extends AML2Methods {
 

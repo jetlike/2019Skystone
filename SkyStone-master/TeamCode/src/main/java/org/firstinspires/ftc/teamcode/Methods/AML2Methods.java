@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Auto.AML2;
+package org.firstinspires.ftc.teamcode.Methods;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
@@ -40,7 +40,7 @@ import java.util.concurrent.BlockingQueue;
 
 import java.util.List;
 
-public class AML2Methods extends LinearOpMode {
+public class AML2Methods extends LinearOpMode{
     private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
     private static final String LABEL_FIRST_ELEMENT = "Stone";
     private static final String LABEL_SECOND_ELEMENT = "Skystone";
@@ -456,6 +456,7 @@ public class AML2Methods extends LinearOpMode {
                 idle();
             }
             initVision();
+            telemetry.addData("YawAngle:", getGyroYaw());
             telemetry.addData("Waiting for Start:", "Press Play to Start Opmode");
             telemetry.update();
             break;
@@ -510,7 +511,7 @@ public class AML2Methods extends LinearOpMode {
     }
 
 
-    public void turnPD(double angle, double p, double d, double timeout) {      //
+    public void turnPD(double angle, double p, double d, double timeout) {
         while (opModeIsActive() && !isStopRequested()) {
             runtime.reset();
             double kP = p / 90;
@@ -533,7 +534,7 @@ public class AML2Methods extends LinearOpMode {
                 }
                 telemetry.addData("P", (angleDiff * kP));
                 telemetry.addData("D", ((Math.abs(angleDiff) - Math.abs(prevAngleDiff)) / dT * kD));
-                telemetry.addData("getTrueDiffval:", getGyroYaw());
+                telemetry.addData("YawAngle:", getGyroYaw());
                 telemetry.update();
                 prevAngleDiff = angleDiff;
             }
