@@ -287,63 +287,13 @@ public class AML2Methods extends LinearOpMode{
         //if the position is less than the number of inches, than it sets the motors to speed
         while (Math.abs(leftBack.getCurrentPosition()) <= ticks && opModeIsActive()) {
             if (inches > 0) {
-                if (getGyroYaw() < currentAng) {
-                    leftFront.setPower(-speed);
-                    telemetry.addData("leftFrontPow:", -speed);
-                    if (Math.abs(speed - ((currentAng - getGyroYaw()) * .01)) < .2) {
-                        if (speed - ((currentAng - getGyroYaw()) * .01) > 0) {
-                            leftBack.setPower(.2);
-                            telemetry.addData("leftBackPow:", 0.2);
-                        } else {
-                            leftBack.setPower(-.2);
-                            telemetry.addData("leftBackPow:", -0.2);
-
-                        }
-                    } else {
-                        leftBack.setPower(speed - ((currentAng - getGyroYaw()) * .01));
-                        telemetry.addData("leftBackPow:", speed - ((currentAng - getGyroYaw()) * .01));
-
-                    }
-                    rightBack.setPower(speed);
-                    telemetry.addData("rightBackPow:", speed);
-
-                    if (Math.abs(-speed - ((currentAng - getGyroYaw()) * .01)) < .2) {
-                        if (-speed - ((currentAng - getGyroYaw()) * .01) > 0) {
-                            rightFront.setPower(.2);
-                            telemetry.addData("rightFrontPow:", 0.2);
-
-                        } else {
-                            rightFront.setPower(-.2);
-                            telemetry.addData("rightFrontPow:", -0.2);
-
-                        }
-                    } else {
-                        rightFront.setPower(-speed - ((currentAng - getGyroYaw()) * .01));
-                        telemetry.addData("rightFrontPow:", -speed - ((currentAng - getGyroYaw()) * .01));
-
-                    }
-
-                } else if (getGyroYaw() > currentAng) {
-                    leftFront.setPower(-speed + ((getGyroYaw() - currentAng) * .01));
-                    leftBack.setPower(speed);
-                    rightBack.setPower(speed + ((getGyroYaw() - currentAng) * .01));
-                    rightFront.setPower(-speed);
-                    telemetry.addData("leftFrontPow:", -speed + ((getGyroYaw() - currentAng) * .01));
-                    telemetry.addData("leftBackPow:", speed);
-                    telemetry.addData("rightBackPow:", speed + ((getGyroYaw() - currentAng) * .01));
-                    telemetry.addData("rightFrontPow:", -speed);
-                } else {
-                    leftFront.setPower(-speed);
-                    leftBack.setPower(speed);
-                    rightBack.setPower(speed);
-                    rightFront.setPower(-speed);
-                    telemetry.addData("leftFrontPow:", -speed);
-                    telemetry.addData("leftBackPow:", speed);
-                    telemetry.addData("rightBackPow:", speed);
-                    telemetry.addData("rightFrontPow:", -speed);
+                   if (getGyroYaw() > currentAng) {
+                       
+                   }
 
                 }
-            }
+            strafeMotors(speed);
+            telemetry.addData("Strafingatspeed:", speed);
             if (Math.abs(leftBack.getCurrentPosition()) > ticks) {
                 break;
 
@@ -731,6 +681,15 @@ public class AML2Methods extends LinearOpMode{
             leftBack.setPower(0);
             rightFront.setPower(0);
             rightBack.setPower(0);
+            break;
+        }
+    }
+    public void strafeMotors(double speed) { //-speed if wanting to strafe left
+        while (!isStopRequested() && opModeIsActive()) {
+            leftFront.setPower(-speed);
+            leftBack.setPower(speed);
+            rightBack.setPower(speed);
+            rightFront.setPower(-speed);
             break;
         }
     }
