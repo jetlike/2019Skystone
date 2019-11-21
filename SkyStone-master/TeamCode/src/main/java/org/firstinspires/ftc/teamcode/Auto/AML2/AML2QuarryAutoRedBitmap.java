@@ -5,8 +5,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Methods.AML2Methods;
 
-@Autonomous(name = "QuarryBlueBitmap", group = "godlyBitmap")
-public class AML2QuarryAutoBlueBitmap extends AML2Methods {
+@Autonomous(name = "QuarryRedBitmap", group = "godlyBitmap")
+public class AML2QuarryAutoRedBitmap extends AML2Methods {
     private ElapsedTime runtime = new ElapsedTime();
 
     public void runOpMode() throws InterruptedException {
@@ -22,10 +22,10 @@ public class AML2QuarryAutoBlueBitmap extends AML2Methods {
             //  GrabBrick(0.45);
             //  sleep(200);
 
-            switch (Skystone(false)) {
+            switch (Skystone(true)) {
                 case "3 & 6":
 //----------------------------------------LineUpWithBlock-------------------------------------------
-                    Strafe(-0.3, 2);
+                    Strafe(0.3, 2);
                     sleep(200);
 
                     MoveInch(.5, 15);
@@ -37,7 +37,7 @@ public class AML2QuarryAutoBlueBitmap extends AML2Methods {
                     MoveInch(-0.7, 6);
                     sleep(200);
 
-                    turnPD(-90, .4, .45, 3);
+                    turnPD(90, .4, .45, 3);
                     sleep(200);
 
                     MoveInch(.8, 30);
@@ -61,14 +61,14 @@ public class AML2QuarryAutoBlueBitmap extends AML2Methods {
                     MoveInch(-0.7, 6);
                     sleep(200);
 
-                    turnPD(-90, .4, .45, 3);
+                    turnPD(90, .4, .45, 3);
                     sleep(200);
 
                     MoveInch(1, 46);
 
                 case "2 & 5":
 //----------------------------------------LineUpWithBlock-------------------------------------------
-                    Strafe(0.3, 6);
+                    Strafe(-0.3, 6);
                     sleep(200);
 
                     MoveInch(.5, 15);
@@ -80,7 +80,7 @@ public class AML2QuarryAutoBlueBitmap extends AML2Methods {
                     MoveInch(-0.7, 6);
                     sleep(200);
 
-                    turnPD(-90, .4, .45, 3);
+                    turnPD(90, .4, .45, 3);
                     sleep(200);
 
                     MoveInch(.8, 38);
@@ -104,14 +104,14 @@ public class AML2QuarryAutoBlueBitmap extends AML2Methods {
                     MoveInch(-0.7, 6);
                     sleep(200);
 
-                    turnPD(-90, .4, .45, 3);
+                    turnPD(90, .4, .45, 3);
                     sleep(200);
 
                     MoveInch(1, 54);
 
                 case "1 & 4":
 //----------------------------------------LineUpWithBlock-------------------------------------------
-                    Strafe(0.3, 14);
+                    Strafe(-0.3, 14);
                     sleep(200);
 
                     MoveInch(.5, 15);
@@ -123,7 +123,7 @@ public class AML2QuarryAutoBlueBitmap extends AML2Methods {
                     MoveInch(-0.7, 6);
                     sleep(200);
 
-                    turnPD(-90, .4, .45, 3);
+                    turnPD(90, .4, .45, 3);
                     sleep(200);
 
                     MoveInch(.8, 46);
@@ -147,7 +147,7 @@ public class AML2QuarryAutoBlueBitmap extends AML2Methods {
                     MoveInch(-0.7, 6);
                     sleep(200);
 
-                    turnPD(-90, .4, .45, 3);
+                    turnPD(90, .4, .45, 3);
                     sleep(200);
 
                     MoveInch(1, 62);
