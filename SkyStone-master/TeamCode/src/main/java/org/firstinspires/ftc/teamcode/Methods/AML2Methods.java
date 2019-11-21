@@ -40,7 +40,7 @@ import java.util.concurrent.BlockingQueue;
 
 import java.util.List;
 
-public class AML2Methods extends LinearOpMode{
+public class AML2Methods extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
     private static final String LABEL_FIRST_ELEMENT = "Stone";
     private static final String LABEL_SECOND_ELEMENT = "Skystone";
@@ -51,6 +51,12 @@ public class AML2Methods extends LinearOpMode{
     private final int RED_THRESHOLD = 25;
     private final int GREEN_THRESHOLD = 25;
     private final int BLUE_THRESHOLD = 25;
+
+    double left = 0;
+    double right = 0;
+    double top = 0;
+    double bottom = 0;
+    double confidence = 0;
 
     /*
      * IMPORTANT: You need to obtain your own license key to use Vuforia. The string below with which
@@ -77,7 +83,7 @@ public class AML2Methods extends LinearOpMode{
      * {@link #tfod} is the variable we will use to store our instance of the TensorFlow Object
      * Detection engine.
      */
-    private TFObjectDetector tfod;
+    public TFObjectDetector tfod;
 
     DcMotor leftBack;
     DcMotor rightBack;
@@ -266,8 +272,8 @@ public class AML2Methods extends LinearOpMode{
         rightFront.setPower(0);
     }
 
-    public void StrafeGyro(double speed, double inches, double currentAng) { // to go left, set speed to a negative
-      // Ticks is the math for the amount of inches, ticks is paired with getcurrentposition
+    public void StrafeGyroRight(double speed, double inches, double currentAng) { // to go left, set speed to a negative
+        // Ticks is the math for the amount of inches, ticks is paired with getcurrentposition
         double ticks = inches * (560 / (2.95276 * Math.PI));
         //runtime isn't used, this is just a backup call which we don't need
 
@@ -287,28 +293,71 @@ public class AML2Methods extends LinearOpMode{
         //if the position is less than the number of inches, than it sets the motors to speed
         while (Math.abs(leftBack.getCurrentPosition()) <= ticks && opModeIsActive()) {
             if (inches > 0) {
-                   if (getGyroYaw() > currentAng) {
-                       
-                   }
+                if (getGyroYaw() > currentAng + 5) {
+                    leftFront.setPower(-0.4);
+                    rightBack.setPower(0.4);
+                } else if (getGyroYaw() < currentAng - 5) {
+                    leftBack.setPower(0.4);
+                    rightFront.setPower(-0.4);
+                } else {
+                    strafeMotors(speed);
+                }
+                telemetry.addData("Strafingatspeed:", speed);
+                if (Math.abs(leftBack.getCurrentPosition()) > ticks) {
+                    break;
 
                 }
-            strafeMotors(speed);
-            telemetry.addData("Strafingatspeed:", speed);
-            if (Math.abs(leftBack.getCurrentPosition()) > ticks) {
-                break;
-
+                telemetry.addData("imuYawAng:", getGyroYaw());
+                telemetry.update();
             }
-
-            telemetry.addData("imuYawAng:", getGyroYaw());
-            telemetry.update();
         }
-        leftBack.setPower(0);
-        rightBack.setPower(0);
-        leftFront.setPower(0);
-        rightFront.setPower(0);
+        stopMotors();
     }
 
+    public void StrafeGyroLeft(double speed, double inches, double currentAng) { // to go left, set speed to a negative
+        // Ticks is the math for the amount of inches, ticks is paired with getcurrentposition
+        double ticks = inches * (560 / (2.95276 * Math.PI));
+        //runtime isn't used, this is just a backup call which we don't need
 
+
+        leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        runtime.reset();
+
+
+        //if the position is less than the number of inches, than it sets the motors to speed
+        while (Math.abs(leftBack.getCurrentPosition()) <= ticks && opModeIsActive()) {
+            if (inches > 0) {
+                if (getGyroYaw() > currentAng + 5) {
+                    leftFront.setPower(0.4);
+                    rightBack.setPower(-0.4);
+                } else if (getGyroYaw() < currentAng - 5) {
+                    leftBack.setPower(-0.4);
+                    rightFront.setPower(0.4);
+                } else {
+                    strafeMotors(speed);
+                }
+
+
+                telemetry.addData("Strafingatspeed:", speed);
+                if (Math.abs(leftBack.getCurrentPosition()) > ticks) {
+                    break;
+
+                }
+
+                telemetry.addData("imuYawAng:", getGyroYaw());
+                telemetry.update();
+            }
+        }
+        stopMotors();
+    }
 
 
     public double blSpeedGyroStabilizer(double speed, double currentAng) {
@@ -461,7 +510,7 @@ public class AML2Methods extends LinearOpMode{
     }
 
 
-    public void turnPD(double angle, double p, double d, double timeout) {
+    public void turnPD(double angle, double p, double d, double timeout) { //.4p and .35d or 45d
         while (opModeIsActive() && !isStopRequested()) {
             runtime.reset();
             double kP = p / 90;
@@ -477,7 +526,7 @@ public class AML2Methods extends LinearOpMode{
                 double dT = currentTime - pastTime;
                 angleDiff = getTrueDiff(-angle);
                 changePID = (angleDiff * kP) + ((angleDiff - prevAngleDiff) / dT * kD);
-               if (changePID < 0) {
+                if (changePID < 0) {
                     startMotors(changePID - .10, -changePID + .10);
                 } else {
                     startMotors(changePID + .10, -changePID - .10);
@@ -493,41 +542,36 @@ public class AML2Methods extends LinearOpMode{
         }
     }
 
-    public String SkystoneVision() {
-        String pos = "not found yet";
+    public void SkystoneVision() {
 
-        if (opModeIsActive()) {
+        while (opModeIsActive() && !isStopRequested()) {
             if (tfod != null) {
                 // getUpdatedRecognitions() will return null if no new information is available since
                 // the last time that call was made.
                 List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
                 if (updatedRecognitions != null) {
                     telemetry.addData("# Object Detected", updatedRecognitions.size());
-
                     // step through the list of recognitions and display boundary info.
                     int i = 0;
                     for (Recognition recognition : updatedRecognitions) {
+                        telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
                         telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f",
                                 recognition.getLeft(), recognition.getTop());
-                        if (recognition.getLeft() < 0.2 * recognition.getImageHeight()) {
-                            pos = "left";
-                        } else if (recognition.getLeft() > 0.2 * recognition.getImageWidth() && recognition.getLeft() < 0.5 * recognition.getImageWidth()) {
-                            pos = "middle";
-                        } else {
-                            pos = "right";
-                        }
-                        telemetry.addData("SkystonePos:", pos);
-                        telemetry.update();
+                        telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
+                                recognition.getRight(), recognition.getBottom());
+                        right = recognition.getRight();
+                        top = recognition.getTop();
+                        bottom = recognition.getBottom();
+                        confidence = recognition.getConfidence();
                     }
+                    telemetry.update();
+
+
                 }
-
             }
-
-            if (tfod != null) {
-                tfod.shutdown();
-            }
+            break;
         }
-        return pos;
+
 
     }
 
@@ -684,6 +728,7 @@ public class AML2Methods extends LinearOpMode{
             break;
         }
     }
+
     public void strafeMotors(double speed) { //-speed if wanting to strafe left
         while (!isStopRequested() && opModeIsActive()) {
             leftFront.setPower(-speed);
@@ -704,13 +749,14 @@ public class AML2Methods extends LinearOpMode{
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
 
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
-        parameters.cameraDirection = CameraDirection.BACK;
+        parameters.cameraName = hardwareMap.get(WebcamName.class, "Webcam 1");
 
         //  Instantiate the Vuforia engine
         vuforia = ClassFactory.getInstance().createVuforia(parameters);
 
         // Loading trackables is not necessary for the TensorFlow Object Detection engine.
     }
+
     public void initVision() {
 // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
         // first.
@@ -736,9 +782,103 @@ public class AML2Methods extends LinearOpMode{
         int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
                 "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
-        tfodParameters.minimumConfidence = 0.7;
+        tfodParameters.minimumConfidence = 0.8;
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
+    }
+
+
+    public class WhatToDo extends AML2Methods {
+
+        public class Results {
+            void Reset() {
+                strafe = 0;
+                forward = 0;
+                grab = false;
+            }
+
+            public double strafe;
+            public double forward;
+            public double distance;
+            public boolean grab;
+
+
+            boolean IsSame(Results other) {
+                if (other.strafe != strafe)
+                    return false;
+                if (other.forward != forward)
+                    return false;
+                if (other.grab != grab)
+                    return false;
+
+                return true;
+            }
+
+
+        }
+
+        public Results results = new Results();
+        public Results lastResults = new Results();
+
+        public void ProcessVision(double left, double right, double top, double bottom, double confidence) {
+
+            results.Reset();
+            if (confidence > .5) {
+                double middleAvg = (right + left) / 2.0;
+
+                results.strafe = CalcStrafe(middleAvg);
+
+                double height = top - bottom;
+
+                results.distance = CalcDist(height);
+                if (results.strafe == 0) {
+                    results.forward = CalcForward(height);
+
+                    if (results.forward == 0) {
+                        results.grab = true;
+                    }
+                }
+            }
+
+
+        }
+
+
+        double CalcDist(double height) {
+            double distance = .27 / height;
+            return distance;
+        }
+
+        double ReturnCent(double distance) {
+            return .5;
+        }
+
+        private double CalcForward(double height) {
+
+            double speed = 0;
+            if (height > .8)
+                speed = 0;
+            else if (height > .6)
+                speed = .2;
+            else if (height <= .6)
+                speed = .5;
+
+            return speed;
+
+        }
+
+        private double CalcStrafe(double middleAvg) {
+            double strafeSpeed = 0.0;
+            if (middleAvg < .4) {
+                strafeSpeed = -.5;
+            } else if (middleAvg > .6) {
+                strafeSpeed = .5;
+            } else {
+                strafeSpeed = 0.0;
+            }
+            return strafeSpeed;
+        }
+
     }
 
     public void runOpMode() throws InterruptedException {
