@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "C:\\Users\\jeffe\\Documents\\GitHub\\Skystone\\TeamCode\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-v11\\values-v11.xml",
+            "outputFile": "C:\\Users\\jeffe\\Documents\\GitHub\\2019Skystone\\TeamCode\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-v11\\values-v11.xml",
             "map": [
                 {
                     "source": "C:\\Users\\jeffe\\.gradle\\caches\\transforms-2\\files-2.1\\fa234a7adad7992a00584847078aeef6\\RobotCore-release\\res\\values-v11\\values-v11.xml",

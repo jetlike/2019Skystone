@@ -435,7 +435,7 @@ public class AML2Methods extends LinearOpMode {
 
             found.setPosition(1);
             found2.setPosition(0);
-            clamp.setPosition(0.7);
+            clamp.setPosition(0.9);
             capstone.setPosition(0.3);
 
             BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -510,9 +510,9 @@ public class AML2Methods extends LinearOpMode {
     }
 
 
-    public void turnPD(double angle, double p, double d, double timeout) { //.4p and .35d or 45d
-        while (opModeIsActive() && !isStopRequested()) {
-            runtime.reset();
+    public void turnPD(double angle, double p, double d, double timeout) {//.4p and .45d for 90
+        while (opModeIsActive() && !isStopRequested()) {                  // big turns = big/avg val
+            runtime.reset();                                              // small turns = small val
             double kP = p / 90;
             double kD = d / 90;
             double currentTime = runtime.milliseconds();
@@ -680,10 +680,10 @@ public class AML2Methods extends LinearOpMode {
             avgX /= xValues.size();
             avgY /= yValues.size();
             if (red) {
-                if (medX < bitmap.getWidth() * 0.3333) {
+                if (medX > bitmap.getWidth() * 0.66666) {
                     skystonePosition = "3 & 6";
                     telemetry.addData("skystonePosition: ", skystonePosition);
-                } else if (medX < bitmap.getWidth() * 0.66666 && medX > bitmap.getWidth() * 0.33333) {
+                } else if (medX < bitmap.getWidth() * 0.5 && medX > bitmap.getWidth() * 0.33333) {
                     skystonePosition = "2 & 5";
                     telemetry.addData("skystonePosition: ", skystonePosition);
                 } else {
@@ -692,10 +692,10 @@ public class AML2Methods extends LinearOpMode {
                 }
                 telemetry.update();
             } else {
-                if (medX > bitmap.getWidth() * 0.66666) {    //fact is that the pixels, start of x, start at the top right, so need to make changes based on that
+                if (medX < bitmap.getWidth() * 0.33333) {    //fact is that the pixels, start of x, start at the top right, so need to make changes based on that
                     skystonePosition = "3 & 6";
                     telemetry.addData("skystonePosition: ", skystonePosition);
-                } else if (medX < bitmap.getWidth() * 0.666666 && medX > bitmap.getWidth() * 0.3333333) {
+                } else if (medX < bitmap.getWidth() * 0.5 && medX > bitmap.getWidth() * 0.3333333) {
                     skystonePosition = "2 & 5";
                     telemetry.addData("skystonePosition: ", skystonePosition);
                 } else {

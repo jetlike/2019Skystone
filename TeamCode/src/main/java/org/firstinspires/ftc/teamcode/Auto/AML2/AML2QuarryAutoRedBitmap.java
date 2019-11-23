@@ -17,22 +17,18 @@ public class AML2QuarryAutoRedBitmap extends AML2Methods {
 
         while (!isStopRequested() && opModeIsActive()) {
             MoveInch(.7, 12);
-            sleep(200); //not needed later
 
-            //  GrabBrick(0.45);
-            //  sleep(200);
+            GrabBrick(0.45);
+            sleep(200);
 
             switch (Skystone(true)) {
                 case "3 & 6":
 //----------------------------------------LineUpWithBlock-------------------------------------------
-                    Strafe(0.3, 2);
-                    sleep(200);
-
-                    MoveInch(.5, 15);
+                    MoveInch(.5, 12);
                     sleep(200);
 //---------------------------------------GrabBlock--------------------------------------------------
-                    //  GrabBrick(.7);
-                    //  sleep(200);
+                    GrabBrick(.7);
+                    sleep(200);
 //---------------------------------------DeliverBlock-----------------------------------------------
                     MoveInch(-0.7, 6);
                     sleep(200);
@@ -40,19 +36,19 @@ public class AML2QuarryAutoRedBitmap extends AML2Methods {
                     turnPD(90, .4, .45, 3);
                     sleep(200);
 
-                    MoveInch(.8, 30);
+                    MoveInch(.8, 34);
                     sleep(200);
 
-                    //   GrabBrick(0.45);
-                    //   sleep(200);
+                    GrabBrick(0.45);
+                    sleep(200);
 //---------------------------------------Get2ndBlock(Deliver and Park)-------------------------------
-                    MoveInch(-0.8, 52);
+                    MoveInch(-0.8, 56);
                     sleep(200);
 
                     turnPD(0, .4, .45, 3);
                     sleep(200);
 
-                    MoveInch(0.5, 6);
+                    MoveInch(0.5, 4);
                     sleep(200);
 
                     GrabBrick(0.7);
@@ -64,18 +60,27 @@ public class AML2QuarryAutoRedBitmap extends AML2Methods {
                     turnPD(90, .4, .45, 3);
                     sleep(200);
 
-                    MoveInch(1, 46);
+                    MoveInch(1, 50);
+
+                    GrabBrick(0.45);
+                    sleep(200);
+
+                    MoveInch(-.3, 4);
+                    break;
 
                 case "2 & 5":
 //----------------------------------------LineUpWithBlock-------------------------------------------
-                    Strafe(-0.3, 6);
+                    Strafe(-0.3, 8);
                     sleep(200);
 
-                    MoveInch(.5, 15);
+                    turnPD(0, .1, .1, 1);
+                    sleep(100);
+
+                    MoveInch(.5, 12);
                     sleep(200);
 //---------------------------------------GrabBlock--------------------------------------------------
-                    //  GrabBrick(.7);
-                    //  sleep(200);
+                    GrabBrick(.7);
+                    sleep(200);
 //---------------------------------------DeliverBlock-----------------------------------------------
                     MoveInch(-0.7, 6);
                     sleep(200);
@@ -83,62 +88,19 @@ public class AML2QuarryAutoRedBitmap extends AML2Methods {
                     turnPD(90, .4, .45, 3);
                     sleep(200);
 
-                    MoveInch(.8, 38);
+                    MoveInch(.8, 42);
                     sleep(200);
 
-                    //   GrabBrick(0.45);
-                    //   sleep(200);
+                    GrabBrick(0.45);
+                    sleep(200);
 //--------------------------------------Get2ndBlock(Deliver and Park)-------------------------------
-                    MoveInch(-0.8, 60);
+                    MoveInch(-0.8, 64);
                     sleep(200);
 
                     turnPD(0, .4, .45, 3);
                     sleep(200);
 
-                    MoveInch(0.5, 6);
-                    sleep(200);
-
-                    GrabBrick(0.7);
-                    sleep(200);
-
-                    MoveInch(-0.7, 6);
-                    sleep(200);
-
-                    turnPD(90, .4, .45, 3);
-                    sleep(200);
-
-                    MoveInch(1, 54);
-
-                case "1 & 4":
-//----------------------------------------LineUpWithBlock-------------------------------------------
-                    Strafe(-0.3, 14);
-                    sleep(200);
-
-                    MoveInch(.5, 15);
-                    sleep(200);
-//---------------------------------------GrabBlock--------------------------------------------------
-                    //  GrabBrick(.7);
-                    //  sleep(200);
-//---------------------------------------DeliverBlock-----------------------------------------------
-                    MoveInch(-0.7, 6);
-                    sleep(200);
-
-                    turnPD(90, .4, .45, 3);
-                    sleep(200);
-
-                    MoveInch(.8, 46);
-                    sleep(200);
-
-                    //   GrabBrick(0.45);
-                    //   sleep(200);
-//---------------------------------------Get2ndBlock(Deliver and Park)------------------------------
-                    MoveInch(-0.8, 68);
-                    sleep(200);
-
-                    turnPD(0, .4, .45, 3);
-                    sleep(200);
-
-                    MoveInch(0.5, 6);
+                    MoveInch(0.5, 4);
                     sleep(200);
 
                     GrabBrick(0.7);
@@ -151,6 +113,64 @@ public class AML2QuarryAutoRedBitmap extends AML2Methods {
                     sleep(200);
 
                     MoveInch(1, 62);
+
+                    GrabBrick(0.45);
+                    sleep(200);
+
+                    MoveInch(-.3, 4);
+                    break;
+
+                case "1 & 4":
+//----------------------------------------LineUpWithBlock-------------------------------------------
+                    Strafe(-0.3, 16);
+                    sleep(200);
+
+                    turnPD(0, .1, .1, 1);
+                    sleep(100);
+
+                    MoveInch(.5, 12);
+                    sleep(200);
+//---------------------------------------GrabBlock--------------------------------------------------
+                    GrabBrick(.7);
+                    sleep(200);
+//---------------------------------------DeliverBlock-----------------------------------------------
+                    MoveInch(-0.7, 6);
+                    sleep(200);
+
+                    turnPD(90, .4, .45, 3);
+                    sleep(200);
+
+                    MoveInch(.8, 50);
+                    sleep(200);
+
+                    GrabBrick(0.45);
+                    sleep(200);
+//---------------------------------------Get2ndBlock(Deliver and Park)------------------------------
+                    MoveInch(-0.8, 60);
+                    sleep(200);
+
+                    turnPD(-45, .6, .675, 3);
+                    sleep(200);
+
+                    MoveInch(0.35, 8.49);
+                    sleep(200);
+
+                    GrabBrick(0.7);
+                    sleep(200);
+
+                    MoveInch(-0.7, 8.49);
+                    sleep(200);
+
+                    turnPD(90, .6, .675, 3);
+                    sleep(200);
+
+                    MoveInch(1, 60);
+
+                    GrabBrick(0.45);
+                    sleep(200);
+
+                    MoveInch(-.3, 4);
+                    break;
             }
 
             break;
