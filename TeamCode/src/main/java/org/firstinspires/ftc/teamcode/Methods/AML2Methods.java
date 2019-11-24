@@ -48,9 +48,9 @@ public class AML2Methods extends LinearOpMode {
     public static String skystonePosition = "notFound";
 
 
-    private final int RED_THRESHOLD = 25;
-    private final int GREEN_THRESHOLD = 25;
-    private final int BLUE_THRESHOLD = 25;
+    private final int RED_THRESHOLD = 33;
+    private final int GREEN_THRESHOLD = 33;
+    private final int BLUE_THRESHOLD = 33;
 
     double left = 0;
     double right = 0;
@@ -637,7 +637,7 @@ public class AML2Methods extends LinearOpMode {
         return bitmap.getWidth();
     }
 
-    //True for Blue
+    //True for red
     public String Skystone(boolean red) throws InterruptedException {
            try {
                while (opModeIsActive() && !isStopRequested()) {
@@ -649,26 +649,16 @@ public class AML2Methods extends LinearOpMode {
                    int skystonePixelCount = 0;
                    ArrayList<Integer> xValues = new ArrayList<>();
                    ArrayList<Integer> yValues = new ArrayList<>();
-                   telemetry.addData("x1", xValues.size());
-                   telemetry.addData("y1", yValues.size());
-                   telemetry.update();
 
                    for (int y = 0; y < bitmap.getHeight() / 2; y++) {
                        for (int x = 0; x < bitmap.getWidth(); x++) {
                            int pixel = bitmap.getPixel(x, y);
                            if (red(pixel) <= RED_THRESHOLD && blue(pixel) <= BLUE_THRESHOLD && green(pixel) <= GREEN_THRESHOLD) {
-                               telemetry.addData("x2", xValues.size());
-                               telemetry.addData("y2", yValues.size());
-                               telemetry.update();
-
-                               xValues.add(x);
+                                                              xValues.add(x);
                                yValues.add(y);
                            }
                        }
                    }
-                   telemetry.addData("x3", xValues.size());
-                   telemetry.addData("y3", yValues.size());
-                   telemetry.update();
 
                    for (int xCoor : xValues) {
                        avgX += xCoor;
@@ -713,6 +703,8 @@ public class AML2Methods extends LinearOpMode {
                return skystonePosition;
            } catch (IndexOutOfBoundsException e) {
                skystonePosition = "default";
+               telemetry.addData("skystonePosition:", skystonePosition);
+               telemetry.update();
                return skystonePosition;
            }
     }
