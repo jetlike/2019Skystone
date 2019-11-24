@@ -16,12 +16,14 @@ public class AML2QuarryAutoBlueBitmap extends AML2Methods {
 
 
         while (!isStopRequested() && opModeIsActive()) {
-            MoveInch(.7, 12);
+            MoveInch(.5, 12);
 
             GrabBrick(0.45);
-            sleep(200);
+            sleep(500);
 
             switch (Skystone(false)) {
+                case "default":
+                    // nothing here so it passes through to 3 and 6 and stops after,
                 case "3 & 6":
 //----------------------------------------LineUpWithBlock-------------------------------------------
                     MoveInch(.5, 12);
@@ -48,7 +50,7 @@ public class AML2QuarryAutoBlueBitmap extends AML2Methods {
                     turnPD(0, .4, .45, 3);
                     sleep(200);
 
-                    MoveInch(0.5, 4);
+                    MoveInch(0.5, 5);
                     sleep(200);
 
                     GrabBrick(0.7);
@@ -171,6 +173,7 @@ public class AML2QuarryAutoBlueBitmap extends AML2Methods {
 
                     MoveInch(-.3, 12);
                     break;
+
 
             }
 
