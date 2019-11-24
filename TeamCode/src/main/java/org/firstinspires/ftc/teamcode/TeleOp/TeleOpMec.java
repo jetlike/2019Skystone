@@ -145,8 +145,8 @@ public class TeleOpMec extends OpMode {
                 runtime.reset();                        // x amount of seconds, so it doesn't jitter
                 telemetry.addData("FoundationPos:", 0.8); //add telemetry to ses where foundation servos are positioned
             } else if (!foundup && runtime.milliseconds() > foundb + 500) {
-                foundation1.setPosition(1);
-                foundation2.setPosition(0);
+                foundation1.setPosition(.95);
+                foundation2.setPosition(.05);
                 foundup = true;
                 runtime.reset();
                 telemetry.addData("FoundationPos:", 0.1); //add telemetry to ses where foundation servos are positioned

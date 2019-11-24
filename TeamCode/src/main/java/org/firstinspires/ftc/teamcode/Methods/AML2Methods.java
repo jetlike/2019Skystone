@@ -48,9 +48,9 @@ public class AML2Methods extends LinearOpMode {
     public static String skystonePosition = "notFound";
 
 
-    private final int RED_THRESHOLD = 25;
-    private final int GREEN_THRESHOLD = 25;
-    private final int BLUE_THRESHOLD = 25;
+    private final int RED_THRESHOLD = 10;
+    private final int GREEN_THRESHOLD = 10;
+    private final int BLUE_THRESHOLD = 10;
 
     double left = 0;
     double right = 0;
@@ -231,10 +231,7 @@ public class AML2Methods extends LinearOpMode {
             }
 
         }
-        leftBack.setPower(0);
-        rightBack.setPower(0);
-        leftFront.setPower(0);
-        rightFront.setPower(0);
+        stopMotors();
     }
 
     public void gyrostrafe(double speed, double inches) { // to go left, set speed to a negative
@@ -414,7 +411,7 @@ public class AML2Methods extends LinearOpMode {
 
 
     public void ready() {
-        while (!isStopRequested()) {
+        while (!isStopRequested() && !isStarted()) {
             found = hardwareMap.servo.get("found1");
             found2 = hardwareMap.servo.get("found2");
             clamp = hardwareMap.servo.get("clamp");
@@ -433,8 +430,8 @@ public class AML2Methods extends LinearOpMode {
             lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
 
-            found.setPosition(1);
-            found2.setPosition(0);
+            found.setPosition(.95);
+            found2.setPosition(.05);
             clamp.setPosition(0.9);
             capstone.setPosition(0.3);
 
@@ -591,10 +588,7 @@ public class AML2Methods extends LinearOpMode {
     }
 
     public Bitmap getBitmap() throws InterruptedException {
-        camera = CameraDevice.getInstance();
 
-        camera.setFlashTorchMode(true);
-        sleep(500);
         VuforiaLocalizer.CloseableFrame picture;
         picture = vuforia.getFrameQueue().take();
         Image rgb = picture.getImage(1);
@@ -630,7 +624,6 @@ public class AML2Methods extends LinearOpMode {
 
         picture.close();
 
-        camera.setFlashTorchMode(false);
         return imageBitmap;
     }
 
@@ -646,67 +639,68 @@ public class AML2Methods extends LinearOpMode {
 
     //True for Blue
     public String Skystone(boolean red) throws InterruptedException {
-        while (opModeIsActive() && !isStopRequested()) {
-            double avgX = 0;
-            double avgY = 0;
-            double medX = 0;
-            double medY = 0;
-            Bitmap bitmap = getBitmap();
-            int skystonePixelCount = 0;
-            ArrayList<Integer> xValues = new ArrayList<>();
-            ArrayList<Integer> yValues = new ArrayList<>();
 
-            for (int y = 0; y < bitmap.getHeight() / 2; y++) {
-                for (int x = 0; x < bitmap.getWidth(); x++) {
-                    int pixel = bitmap.getPixel(x, y);
-                    if (red(pixel) <= RED_THRESHOLD && blue(pixel) <= BLUE_THRESHOLD && green(pixel) <= GREEN_THRESHOLD) {
-                        xValues.add(x);
-                        yValues.add(y);
+            while (opModeIsActive() && !isStopRequested()) {
+                double avgX = 0;
+                double avgY = 0;
+                double medX = 0;
+                double medY = 0;
+                Bitmap bitmap = getBitmap();
+                int skystonePixelCount = 0; 
+                ArrayList<Integer> xValues = new ArrayList<>();
+                ArrayList<Integer> yValues = new ArrayList<>();
+
+                for (int y = 1; y < bitmap.getHeight() / 2; y++) {
+                    for (int x = 1; x < bitmap.getWidth(); x++) {
+                        int pixel = bitmap.getPixel(x, y);
+                        if (red(pixel) <= RED_THRESHOLD && blue(pixel) <= BLUE_THRESHOLD && green(pixel) <= GREEN_THRESHOLD) {
+                            xValues.add(x);
+                            yValues.add(y);
+                        }
                     }
                 }
-            }
 
-            for (int xCoor : xValues) {
-                avgX += xCoor;
-            }
-            for (int yCoor : yValues) {
-                avgY += yCoor;
-            }
-            Collections.sort(xValues);
-            Collections.sort(yValues);
-            medX = xValues.get(xValues.size() / 2);
-            telemetry.addData("medX", medX);
-            medY = yValues.get(yValues.size() / 2);
-            avgX /= xValues.size();
-            avgY /= yValues.size();
-            if (red) {
-                if (medX > bitmap.getWidth() * 0.66666) {
-                    skystonePosition = "3 & 6";
-                    telemetry.addData("skystonePosition: ", skystonePosition);
-                } else if (medX < bitmap.getWidth() * 0.5 && medX > bitmap.getWidth() * 0.33333) {
-                    skystonePosition = "2 & 5";
-                    telemetry.addData("skystonePosition: ", skystonePosition);
-                } else {
-                    skystonePosition = "1 & 4";
-                    telemetry.addData("skystonePosition: ", skystonePosition);
+                for (int xCoor : xValues) {
+                    avgX += xCoor;
                 }
-                telemetry.update();
-            } else {
-                if (medX < bitmap.getWidth() * 0.33333) {    //fact is that the pixels, start of x, start at the top right, so need to make changes based on that
-                    skystonePosition = "3 & 6";
-                    telemetry.addData("skystonePosition: ", skystonePosition);
-                } else if (medX < bitmap.getWidth() * 0.5 && medX > bitmap.getWidth() * 0.3333333) {
-                    skystonePosition = "2 & 5";
-                    telemetry.addData("skystonePosition: ", skystonePosition);
-                } else {
-                    skystonePosition = "1 & 4";
-                    telemetry.addData("skystonePosition: ", skystonePosition);
+                for (int yCoor : yValues) {
+                    avgY += yCoor;
                 }
-                telemetry.update();
+                Collections.sort(xValues);
+                Collections.sort(yValues);
+                medX = xValues.get(xValues.size() / 2);
+                telemetry.addData("medX", medX);
+                medY = yValues.get(yValues.size() / 2);
+                avgX /= xValues.size();
+                avgY /= yValues.size();
+                if (red) {
+                    if (medX > bitmap.getWidth() * 0.66666) {
+                        skystonePosition = "3 & 6";
+                        telemetry.addData("skystonePosition: ", skystonePosition);
+                    } else if (medX < bitmap.getWidth() * 0.55 && medX > bitmap.getWidth() * 0.33333) {
+                        skystonePosition = "2 & 5";
+                        telemetry.addData("skystonePosition: ", skystonePosition);
+                    } else {
+                        skystonePosition = "1 & 4";
+                        telemetry.addData("skystonePosition: ", skystonePosition);
+                    }
+                    telemetry.update();
+                } else {
+                    if (medX < bitmap.getWidth() * 0.33333) {    //0,0 starts at left bottom
+                        skystonePosition = "3 & 6";
+                        telemetry.addData("skystonePosition: ", skystonePosition);
+                    } else if (medX < bitmap.getWidth() * 0.5 && medX > bitmap.getWidth() * 0.3333333) {
+                        skystonePosition = "2 & 5";
+                        telemetry.addData("skystonePosition: ", skystonePosition);
+                    } else  {
+                        skystonePosition = "1 & 4";
+                        telemetry.addData("skystonePosition: ", skystonePosition);
+                    }
+                    telemetry.update();
+                }
+                break;
             }
-            break;
-        }
-        return skystonePosition;
+            return skystonePosition;
     }
 
     public void startMotors(double left, double right) {

@@ -60,17 +60,17 @@ public class AML2QuarryAutoBlueBitmap extends AML2Methods {
                     turnPD(-90, .4, .45, 3);
                     sleep(200);
 
-                    MoveInch(1, 50);
+                    MoveInch(.8, 58);
 
                     GrabBrick(0.45);
                     sleep(200);
 
-                    MoveInch(-.3, 4);
+                    MoveInch(-.3, 12);
                     break;
 
                 case "2 & 5":
 //----------------------------------------LineUpWithBlock-------------------------------------------
-                    Strafe(0.3, 8);
+                    Strafe(0.3, 6);
                     sleep(200);
 
                     turnPD(0, .1, .1, 1);
@@ -94,7 +94,7 @@ public class AML2QuarryAutoBlueBitmap extends AML2Methods {
                     GrabBrick(0.45);
                     sleep(200);
 //--------------------------------------Get2ndBlock(Deliver and Park)-------------------------------
-                    MoveInch(-0.8, 64);
+                    MoveInch(-0.8, 62.5);
                     sleep(200);
 
                     turnPD(0, .4, .45, 3);
@@ -112,17 +112,17 @@ public class AML2QuarryAutoBlueBitmap extends AML2Methods {
                     turnPD(-90, .4, .45, 3);
                     sleep(200);
 
-                    MoveInch(1, 58);
+                    MoveInch(.8, 64);
 
                     GrabBrick(0.45);
                     sleep(200);
 
-                    MoveInch(-.3, 4);
+                    MoveInch(-.3, 10);
                     break;
 
                 case "1 & 4":
 //----------------------------------------LineUpWithBlock-------------------------------------------
-                    Strafe(0.3, 16);
+                    Strafe(0.3, 10.5);
                     sleep(200);
 
                     turnPD(0, .1, .1, 1);
@@ -146,31 +146,32 @@ public class AML2QuarryAutoBlueBitmap extends AML2Methods {
                     GrabBrick(0.45);
                     sleep(200);
 //---------------------------------------Get2ndBlock(Deliver and Park)------------------------------
-                    MoveInch(-0.8, 60);
+                    MoveInch(-0.8, 57);
                     sleep(200);
 
                     turnPD(45, .6, .675, 3);
                     sleep(200);
 
-                    MoveInch(0.35, 8.49);
+                    MoveInch(0.25, 11);
                     sleep(200);
 
                     GrabBrick(0.7);
                     sleep(200);
 
-                    MoveInch(-0.7, 8.49);
+                    MoveInch(-0.7, 11);
                     sleep(200);
 
                     turnPD(-90, .6, .675, 3);
                     sleep(200);
 
-                    MoveInch(1, 60);
+                    MoveInch(.8, 60);
 
                     GrabBrick(0.45);
                     sleep(200);
 
-                    MoveInch(-.3, 4);
+                    MoveInch(-.3, 12);
                     break;
+
             }
 
             break;
