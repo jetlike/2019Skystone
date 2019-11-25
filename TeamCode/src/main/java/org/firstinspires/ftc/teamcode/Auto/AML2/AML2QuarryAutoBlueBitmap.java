@@ -23,7 +23,7 @@ public class AML2QuarryAutoBlueBitmap extends AML2Methods {
 
             switch (Skystone(false)) {
                 case "default":
-                    // nothing here so it passes through to 3 and 6 and stops after,
+                    // nothing here so it passes through to 3 and 6 and stops after
                 case "3 & 6":
 //----------------------------------------LineUpWithBlock-------------------------------------------
                     MoveInch(.5, 12);
